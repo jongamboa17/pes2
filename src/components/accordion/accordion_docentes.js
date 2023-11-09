@@ -53,8 +53,6 @@ export default function Accordion_docentes() {
                 </div>
             </div>
         </div>
-   
-
     </>
   )
 }
