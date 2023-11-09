@@ -14,5 +14,9 @@ module.exports = {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    require("daisyui"),
+    require('@tailwindcss/forms'),
+    require('@themesberg/flowbite/plugin'),
+  ],
 }

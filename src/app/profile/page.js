@@ -5,7 +5,7 @@ import { redirect } from 'next/navigation';
 
 import SignOut from 'src/components/SignOut';
 
-export default async function Home() {
+export default async function Profile() {
   const supabase = createServerComponentClient({ cookies });
 
   const {
@@ -18,10 +18,12 @@ export default async function Home() {
 
   return (
     <div className="card">
-      <h2>Bienvenido</h2>
-      <code className="highlight">{user.role}</code>
-      <Link className="button" href="/profile">
-        Ir al perfil
+      <h2>Perfíl</h2>
+      <code className="highlight">{user.email}</code>
+      <div className="heading">Ultima sesión</div>
+      <code className="highlight">{new Date(user.last_sign_in_at).toUTCString()}</code>
+      <Link className="button" href="/">
+        Ir al Inicio
       </Link>
       <SignOut />
     </div>
