@@ -16,7 +16,7 @@ export default function page () {
                 <div className="collapse collapse-arrow bg-white mb-2">
                     <input type="checkbox" id="accordion-item-1" className="peer hidden" />
                     <label htmlFor="accordion-item-1" className="collapse-title text-xl font-medium">
-                    Primer Grado A
+                    Primer Grado A2
                     </label>
                     <div className="collapse-content peer-checked:block hidden"> 
                         <div class="flow-root py-2">  

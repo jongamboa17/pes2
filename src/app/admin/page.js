@@ -2,9 +2,12 @@
 import 'flowbite';
 import Navbar from '@/components/navbar';
 import Accordion_docentes from '@/components/accordion/accordion_docentes';
+import Accordion_docentes2 from '@/components/accordion/accordion_docentes2';
 import Accordion2 from '@/components/accordion/accordion2';
+import Accordion3 from '@/components/accordion/accordion3';
 import Modal from "@/components/modals/modal_usuario"
 import Nuevo_usuario from "@/components/forms/nuevo_usuario"
+import Nuevo_docente from '@/components/forms/nuevo_docente';
 import Nueva_asignatura from "@/components/forms/nueva_asignatura"
 import Alumnos_pendientes from '@/components/alumnos_pendientes';
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
@@ -87,6 +90,9 @@ export default async function page() {
   return (
     <>  
         <Navbar></Navbar>
+
+       
+        {/**------------------ */}
         <div className="py-1 px-5 grid grid-cols-1 gap-x-2 gap-y-3 grid-flow-row-dense">
             
             {/**botones */}
@@ -95,7 +101,11 @@ export default async function page() {
                 <div className="p-1 text-center">
                     <button className=" px-5 sm:p-5 text-white bg-blue-700 hover:bg-blue-800 
                                         focus:outline-none font-medium text-sm rounded-lg py-2.5 text-center mr-5 ">
-                        <label htmlFor="my_modal_7" className="">Nuevo Usuario</label>
+                        <label htmlFor="my_modal_20" className="">Nuevo Docente</label>
+                    </button>
+                    <button className=" px-5 sm:p-5 text-white bg-blue-700 hover:bg-blue-800 
+                                        focus:outline-none font-medium text-sm rounded-lg py-2.5 text-center mr-5 ">
+                        <label htmlFor="my_modal_7" className="">Nuevo Alumno</label>
                     </button>
                     <button className=" px-5 sm:p-5 text-white bg-blue-700 hover:bg-blue-800 
                                         focus:outline-none font-medium text-sm rounded-lg py-2.5 text-center mr-5 ">
@@ -106,14 +116,16 @@ export default async function page() {
             </div> 
             
 
-            <div className="py-1 px-5 grid grid-cols-2  gap-x-2 gap-y-3 grid-flow-row-dense ">
-                <div className="bg-white rounded-lg shadow-xl min-h-[400px] row-span-5"><Accordion2></Accordion2></div>
-                <div className="bg-white rounded-lg shadow-xl min-h-[400px] row-span-5">
+            <div className="py-1 px-5 grid grid-cols-2   gap-y-3 grid-flow-row-dense ">
+                <div className="bg-white rounded-lg shadow-xl min-h-[400px] row-span-5 ">
+                    <Accordion3></Accordion3>
+                </div>
+                <div className="bg-white rounded-lg  min-h-[400px] row-span-5">
                     <div className=" px-5 grid grid-cols-1 gap-x-2 gap-y-3 grid-flow-row-dense">
-                        <div className="bg-white shadow-xl rounded-lg  min-h-[100px] row-span-5">
+                        
                             
-                            <Accordion_docentes ></Accordion_docentes>
-                        </div>
+                            <Accordion_docentes2></Accordion_docentes2>
+                        
                         
                     </div>
                     <div className="py-1 px-5 grid grid-cols-2 gap-x-2 gap-y-3 grid-flow-row-dense">
@@ -184,7 +196,16 @@ export default async function page() {
             <label className="modal-backdrop" htmlFor="my_modal_7">Close</label>
         </div>
 
-        {/**Modal nuevo alumno*/}
+        {/**Modal nuevo docente*/}
+        <input type="checkbox" id="my_modal_20" className="modal-toggle" />
+        <div className="modal">
+            <div className="modal-box">
+                <Nuevo_docente></Nuevo_docente>
+            </div>
+            <label className="modal-backdrop" htmlFor="my_modal_20">Close</label>
+        </div>
+
+        {/**Modal nueva asignatura*/}
         <input type="checkbox" id="my_modal_8" className="modal-toggle" />
         <div className="modal">
             <div className="modal-box">
@@ -199,3 +220,11 @@ export default async function page() {
     </>
   )
 }
+
+
+
+
+
+
+
+
