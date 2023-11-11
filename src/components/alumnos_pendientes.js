@@ -94,7 +94,14 @@ export default function Alumnos_pendientes() {
             </svg>
         </button>
       </center>
-        
+      {/**mensaje cuando no hay alumnos inactivos */}
+      {alumnos.length===0 ? 
+            <center>
+              <div className='p-4'>
+                <span className='m-4'>No hay alumnos inactivos</span>
+              </div>
+            </center>
+          : ''}
       <ul class="h-60 py-2 overflow-y-auto text-gray-700 dark:text-gray-200" aria-labelledby="dropdownUsersButton">
         {alumnos.map((docente) => (
         <li key={docente.id}>
@@ -111,6 +118,8 @@ export default function Alumnos_pendientes() {
         </li>
           ))}
       </ul>
+      
+      
   </>
 
 )
