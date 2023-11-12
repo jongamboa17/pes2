@@ -21,14 +21,15 @@ export default function Accordion_docentes2() {
         //filtrar los docentes por rol
         profileData = data.filter((docente) => docente.role === 'Docente');
         setDocentes(profileData);
-        
     }
     };
-    
     fetchDocentes();
-    
-
    }, []);
+
+   //actualizar datos de docentes
+   const actualizarDocentes = (docentesActualizados) => {
+    setDocentes(docentesActualizados);
+  };
     
   
   return (
@@ -42,7 +43,7 @@ export default function Accordion_docentes2() {
             </label>
             <div className="collapse-content peer-checked:block hidden"> 
                 {/** */}
-                <Tabla_docentes docentes={docentes}></Tabla_docentes>
+                <Tabla_docentes docentes={docentes} onActualizarDocentes={actualizarDocentes}></Tabla_docentes>
                 
                 {/** */}
             </div>
