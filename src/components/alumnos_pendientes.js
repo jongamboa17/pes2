@@ -3,6 +3,8 @@ import Image from 'next/image'
 import logo2 from '../utilities/photo1.avif'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { useEffect, useState } from 'react';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 export default function Alumnos_pendientes() {
   const [alumnos, setAlumnos] = useState([]);
   //estado para manejar usuarios seleccionados
@@ -61,6 +63,7 @@ export default function Alumnos_pendientes() {
         } else {
           actualizados = true; // Se marca que hubo actualizaciones exitosas
           console.log('Alumno actualizado:', alumno.id , data);
+         
         }
       }
     
@@ -72,6 +75,12 @@ export default function Alumnos_pendientes() {
     
         setAlumnos(alumnosActualizados); // Actualizar el estado con los alumnos restantes
         setSeleccionados([]); // Limpiar los seleccionados
+        // Mostrar mensaje de éxito si es mas de uno o otro si es solo uno
+        if (alumnosActualizados.length === 1) {
+        toast.success('Alumno activado correctamente');
+        } else {
+          toast.success('Alumnos activados correctamente');
+        }
       }
     };
        
@@ -80,6 +89,7 @@ export default function Alumnos_pendientes() {
     
     return (
     <>
+      <ToastContainer />
       <center>
         <button type="button"
                 class=" text-white  bg-green-500 hover:bg-green-700 
