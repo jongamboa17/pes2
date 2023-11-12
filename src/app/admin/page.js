@@ -1,6 +1,7 @@
 
 import 'flowbite';
 import Navbar from '@/components/navbar';
+import SignUp from 'src/components/Auth/SignUp';
 import Accordion_docentes from '@/components/accordion/accordion_docentes';
 import Accordion_docentes2 from '@/components/accordion/accordion_docentes2';
 import Accordion2 from '@/components/accordion/accordion2';
@@ -211,7 +212,7 @@ export default async function page() {
         </div>
 
 
-        
+       
        
     </>
   )

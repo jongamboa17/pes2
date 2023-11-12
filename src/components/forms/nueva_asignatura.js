@@ -15,6 +15,11 @@ export default function Nueva_asignatura({ modalId }){
         document.getElementById(modalId).checked = false;
     };
 
+    const seleccionarTodosGrados = () => {
+        const todosLosIds = grados.map(grado => grado.id);
+        setGradosSeleccionados(todosLosIds);
+    };
+
     //pbetener grados de la base de datos
     const obtenerGrados = async () => {
         let { data: grados, error } = await supabase
@@ -115,6 +120,8 @@ export default function Nueva_asignatura({ modalId }){
             //alert('Asignatura creada con éxito y relaciones establecidas');
             toast.success('Asignatura creada con éxito y asignada a los grados seleccionados');
             cerrarModal(); // Cierra el modal
+            setNombreAsignatura(''); // Restablecer el nombre de la asignatura
+            setGradosSeleccionados([]); // Limpiar los grados seleccionados
         }
     };
     
@@ -135,14 +142,23 @@ export default function Nueva_asignatura({ modalId }){
                             <div>
                                 <input  type="text" 
                                         name="asignatura" 
+                                        value={nombreAsignatura}
                                         id="asignatura" 
                                         onChange={handleAsignaturaChange}
                                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Nombre de la asignatura" required=""/>
                             </div> 
                         </div>
-                        <center>
-                        <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Asignar a:</label>
-                        </center>
+                        <div class="flow-root">  
+                                <p class="float-left font-bold ">Asignar a:</p> 
+                                <p class="float-right">
+                                    <button onClick={seleccionarTodosGrados} className="text-white inline-flex items-center bg-blue-700 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
+                                        Seleccionar Todos
+                                    </button> 
+                                    
+                                </p>
+                            </div>
+                        
+                        
                         <div className="grid gap-4 mb-4 sm:grid-cols-2 py-5">    
                         {/**map de grados */}
                         {grados.map((grado, index) => (
@@ -150,6 +166,7 @@ export default function Nueva_asignatura({ modalId }){
                             <div key={index} class="flex items-center pl-4 border border-gray-200 rounded dark:border-gray-700">
                                 <input  id={grado.id}
                                         type="checkbox" 
+                                        checked={gradosSeleccionados.includes(grado.id)}
                                         value={grado.id}
                                         name="bordered-checkbox" 
                                         onChange={() => handleCheckboxChange(grado.id)}
@@ -161,7 +178,7 @@ export default function Nueva_asignatura({ modalId }){
                         <button type="submit"
                                 onClick={handleSubmit}
                                 class="text-white inline-flex items-center bg-lime-700 hover:bg-lime-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
-                            <svg class="mr-1 -ml-1 w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd"></path></svg>
+                            
                             Crear Asignatura
                         </button>
                     </form>
