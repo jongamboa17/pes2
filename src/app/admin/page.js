@@ -205,7 +205,7 @@ export default async function page() {
         <input type="checkbox" id="my_modal_8" className="modal-toggle" />
         <div className="modal">
             <div className="modal-box">
-                <Nueva_asignatura></Nueva_asignatura>
+                <Nueva_asignatura modalId="my_modal_8"></Nueva_asignatura>
             </div>
             <label className="modal-backdrop" htmlFor="my_modal_8">Close</label>
         </div>
