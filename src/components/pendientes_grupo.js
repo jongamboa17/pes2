@@ -11,9 +11,14 @@ export default function Pendientes_grupo() {
     const [grados, setGrados] = useState([]);
     const [grupos, setGrupos] = useState([]);
     const [gradoSeleccionado, setGradoSeleccionado] = useState('');
-
+    const [alumnosSeleccionados, setAlumnosSeleccionados] = useState([]);
+    const [grupoSeleccionado, setGrupoSeleccionado] = useState('');
+    
     
   //traer los alumnos que no tengan grupo en la base de datos
+  useEffect(() => {
+    //traer datos de la base de datos cantidad de docentes
+    
     let profileData = [];
     const fetchAlumnos = async () => {
     const { data, error } = await supabase
@@ -25,26 +30,30 @@ export default function Pendientes_grupo() {
     } else {
         //console.log('Alumnos:', data);
         //profileData = data;
-        //filtrar los docentes si no tiene grupo
+        //filtrar los docentes por rol y campo activo sea igual a false
+ 
         profileData = data.filter((alumno) => alumno.role === 'Alumno' && alumno.Grupo === null && alumno.activo === true);
         setAlumnos(profileData);
+        //console.log('Alumnos:', profileData);
     }
     };
-
     //pbetener grados de la base de datos
     const obtenerGrados = async () => {
-        let { data: grados, error } = await supabase
-            .from('grados') // Asegúrate de que 'grados' es el nombre correcto de tu tabla
+        let { data: gradosObtenidos, error } = await supabase
+            .from('grados')
             .select('*');
     
         if (error) {
             console.log('Error al obtener los grados:', error);
         } else {
-            //setGrados(grados);
-            setGrados(reordenarGrados(grados));
-            console.log('Grados:', reordenarGrados(grados));
+            setGrados(reordenarGrados(gradosObtenidos));
         }
     };
+    obtenerGrados();
+     fetchAlumnos();
+   }, []);
+    
+    
 
     const reordenarGrados = (grados) => {
         if (grados.length > 1) {
@@ -61,12 +70,11 @@ export default function Pendientes_grupo() {
 
         const obtenerGrupos = async () => {
             if (gradoSeleccionado) {
-                console.log('Grado seleccionado:', gradoSeleccionado);
                 let { data: gruposObtenidos, error } = await supabase
                     .from('grupos')
                     .select('*')
                     .eq('grado_id', gradoSeleccionado);
-                console.log('Grupos obtenidos:', gruposObtenidos);
+        
                 if (error) {
                     console.error('Error al obtener grupos:', error);
                 } else {
@@ -77,70 +85,133 @@ export default function Pendientes_grupo() {
             }
         };
         
+        useEffect(() => {
+            obtenerGrupos();
+        }, [gradoSeleccionado]);
 
-    useEffect(() => {
-        obtenerGrados();
-        fetchAlumnos();
-    }, []);
-
-    useEffect(() => {
-        obtenerGrupos();
-    }, [gradoSeleccionado]);
+    
 
     const handleGradoChange = (event) => {
         const seleccionado = parseInt(event.target.value, 10);
         setGradoSeleccionado(seleccionado);
+        console.log('Grado seleccionado:', seleccionado);
     };
+    
+    const handleAlumnoCheckboxChange = (alumnoId) => {
+        setAlumnosSeleccionados(prev => {
+            const isSelected = prev.includes(alumnoId);
+            if (isSelected) {
+                return prev.filter(id => id !== alumnoId);
+            } else {
+                return [...prev, alumnoId];
+            }
+        });
+    };
+    
+    const handleGrupoChange = (event) => {
+        setGrupoSeleccionado(event.target.value);
+        console.log('Grupo seleccionado:', event.target.value);
+    };
+    
+    const asignarAlumnosAGrupo = async () => {
+        let actualizados = false;
+        for (const alumnoId of alumnosSeleccionados) {
+            const { error } = await supabase
+                .from('profiles') // Asume que 'profiles' es la tabla donde se almacenan los alumnos
+                .update({ Grupo: grupoSeleccionado }) // Asume que 'grupo_id' es el campo para el grupo en 'profiles'
+                .eq('id', alumnoId);
+    
+            if (error) {
+                console.error('Error al actualizar alumno:', alumnoId, error);
+                toast.error(`Error al asignar el alumno con ID: ${alumnoId}`);
+            }else
+            {
+                actualizados = true;
+                console.log('Alumno actualizado:', alumnoId);
+            }
+        }
+
+        if (actualizados) {
+            // Filtrar fuera los alumnos que han sido actualizados
+            const alumnosRestantes = alumnos.filter(
+                alumno => !alumnosSeleccionados.includes(alumno.id)
+            );
+
+            setAlumnos(alumnosRestantes);
+            setAlumnosSeleccionados([]);
+            toast.success('Alumno agregado correctamente');
+            
+            }
+    
+       
+    };
+
+   
+
+    
     
     
     return (
     <>
       <ToastContainer />
         <center>
-            <button type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center mr-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+            <button onClick={asignarAlumnosAGrupo} type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center mr-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                 <svg class="w-3 h-3 text-white dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.1" d="M9 1v16M1 9h16"/>
                 </svg>  
             </button>
         </center>
-        <ul class="h-40 py-2 overflow-y-auto text-gray-700 dark:text-gray-200" aria-labelledby="dropdownUsersButton">
-            {alumnos.map((docente) => (
-            <li key={docente.id}>
-            <a href="#" class="flex items-center px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
-            <input
-                type="checkbox"
-                className="w-5 h-5 rounded-md mr-2"
-                
-            />
-                <Image class="w-6 h-6 mr-2 rounded-full"  src={logo2} alt="Jese image"/>
-                <span className='font-bold'>{docente.name}{' '}{docente.lastname} </span>
-            </a>
-            </li>
-            ))}
-        </ul>
-    
-        <center>
-        <select className='select select-bordered w-full max-w-xs' value={gradoSeleccionado} onChange={handleGradoChange}>
-            <option value="">Seleccione un Grado</option>
-            {grados.map((grado) => (
-                <option key={grado.id} value={grado.id}>
-                    {grado.nombre}
-                </option>
-            ))}
-        </select>
+        {/**mensaje cuando no hay alumnos en la lista */}
         
-        {gradoSeleccionado && (
-            <select className='select select-bordered w-full max-w-xs' multiple>
-                {grupos.map((grupo) => (
-                    <option key={grupo.id} value={grupo.id}>
-                        {grupo.nombre}
+        {alumnos.length===0 ? 
+            <center>
+            <div className='p-4'>
+                <span className='m-4'>No hay alumnos pendientes de grupo</span>
+            </div>
+            </center>
+        : ''}
+
+        <ul class="h-40 py-2 overflow-y-auto text-gray-700 dark:text-gray-200" aria-labelledby="dropdownUsersButton">
+        {alumnos.map((alumno) => (
+            <li key={alumno.id}>
+                <a href="#" className="flex items-center px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                    <input
+                        type="checkbox"
+                        className="w-5 h-5 rounded-md mr-2"
+                        onChange={() => handleAlumnoCheckboxChange(alumno.id)}
+                        checked={alumnosSeleccionados.includes(alumno.id)}
+                    />
+                    <Image className="w-6 h-6 mr-2 rounded-full" src={logo2} alt={`${alumno.name} ${alumno.lastname}`} />
+                    <span className='font-bold'>{alumno.name}{' '}{alumno.lastname}</span>
+                </a>
+            </li>
+        ))}
+        </ul>
+        
+        {alumnos.length===0 ? ''
+        :
+        <center>
+            <select className='select select-bordered w-50 max-w-xs' value={gradoSeleccionado} onChange={handleGradoChange}>
+                <option disabled selected value="">Seleccione grado</option>
+                {grados.map((grado) => (
+                    <option key={grado.id} value={grado.id}>
+                        {grado.nombre}{' '}Grado
                     </option>
                 ))}
             </select>
-        )}
-
             
+            {gradoSeleccionado && (
+                <select className='select select-bordered w-50 max-w-xs m-2' onChange={handleGrupoChange} value={grupoSeleccionado}>
+                    <option disabled value="">Seleccione grupo</option>
+                    {grupos.map((grupo) => (
+                        <option key={grupo.id} value={grupo.id}>Grupo {grupo.nombre}</option>
+                        ))}
+                </select>
+            )}   
         </center>
+        
+        }
+        
         
   </>
 
