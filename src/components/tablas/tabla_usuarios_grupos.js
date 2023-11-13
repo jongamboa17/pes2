@@ -1,7 +1,31 @@
 import Image from 'next/image'
 import logo from '../../utilities/logo1.png'
 import 'flowbite'
-export default function Tabla_usuarios_grupos() {    
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { useEffect, useState } from 'react';
+export default function Tabla_usuarios_grupos({grupoId}) {    
+    const [alumnos, setAlumnos] = useState([]);
+    const supabase = createClientComponentClient();
+
+    useEffect(() => {
+        const fetchAlumnos = async () => {
+            const { data, error } = await supabase
+                .from('profiles') // Asume que 'profiles' es la tabla donde se almacenan los alumnos
+                .select('*')
+                .eq('Grupo', grupoId); // Asume que 'grupo_id' es la columna que relaciona al alumno con el grupo
+
+            if (error) {
+                console.error('Error al obtener alumnos:', error);
+            } else {
+                setAlumnos(data);
+            }
+        };
+
+        if (grupoId) {
+            fetchAlumnos();
+        }
+    }, [grupoId]);
+
     return (
         
         <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
@@ -26,7 +50,9 @@ export default function Tabla_usuarios_grupos() {
                     </tr>
                 </thead>
                 <tbody>
-                    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                
+                {alumnos.map((alumno) => (
+                    <tr key={alumno.id} class=" bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                         <td class="w-4 pl-6">
                             <input  id="link-checkbox" type="checkbox" value="" class="w-5 h-5 rounded-md mr-2"/>
                             
@@ -34,12 +60,12 @@ export default function Tabla_usuarios_grupos() {
                         <th scope="row" class="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
                             <Image width="10"  height="10" class="w-10 h-10 rounded-full" src={logo} alt="Jese image"></Image>
                             <div class="pl-3">
-                                <div class="text-base font-semibold">Neil Sims</div>
-                                <div class="font-normal text-gray-500">neil.sims@gmail.com</div>
+                                <div class="text-base font-semibold">{alumno.name}{' '}{alumno.lastname}</div>
+                                <div class="font-normal text-gray-500">{alumno.email}</div>
                             </div>  
                         </th>
                         <td class="px-6 py-4">
-                            88888888
+                            {alumno.number}
                         </td>
                         <td class="px-6 py-4">
                             {/**<div class="flex items-center">
@@ -50,101 +76,19 @@ export default function Tabla_usuarios_grupos() {
                             <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Editar</a>
                         </td>
                     </tr>
-                    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                        <td class="w-4 pl-6">
-                            <input  id="link-checkbox" type="checkbox" value="" class="w-5 h-5 rounded-md mr-2"/>
-                            
-                        </td>
-                        <th scope="row" class="flex items-center px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                            <Image width="10"  height="10" class="w-10 h-10 rounded-full" src={logo} alt="Jese image"></Image>
-                            <div class="pl-3">
-                                <div class="text-base font-semibold">Bonnie Green</div>
-                                <div class="font-normal text-gray-500">bonnie@gmail.com</div>
-                            </div>
-                        </th>
-                        <td class="px-6 py-4">
-                        88888888
-                        </td>
-                        <td class="px-6 py-4">
-                            {/**<div class="flex items-center">
-                                <div class="h-2.5 w-2.5 rounded-full bg-green-500 mr-2"></div> Online
-                            </div>*/}
-                        </td>
-                        <td class="px-6 py-4">
-                            <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Editar</a>
-                        </td>
-                    </tr>
-                    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                        <td class="w-4 pl-6">
-                            <input  id="link-checkbox" type="checkbox" value="" class="w-5 h-5 rounded-md mr-2"/>
-                        </td>
-                        <th scope="row" class="flex items-center px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                            <Image width="10"  height="10" class="w-10 h-10 rounded-full" src={logo} alt="Jese image"></Image>
-                            <div class="pl-3">
-                                <div class="text-base font-semibold">Jese Leos</div>
-                                <div class="font-normal text-gray-500">jese@gmail.com</div>
-                            </div>
-                        </th>
-                        <td class="px-6 py-4">
-                        88888888
-                        </td>
-                        <td class="px-6 py-4">
-                            {/**<div class="flex items-center">
-                                <div class="h-2.5 w-2.5 rounded-full bg-green-500 mr-2"></div> Online
-                            </div>*/}
-                        </td>
-                        <td class="px-6 py-4">
-                            <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Editar</a>
-                        </td>
-                    </tr>
-                    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                        <td class="w-4 pl-6">
-                            <input  id="link-checkbox" type="checkbox" value="" class="w-5 h-5 rounded-md mr-2"/>  
-                        </td>
-                        <th scope="row" class="flex items-center px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                            <Image width="10"  height="10" class="w-10 h-10 rounded-full" src={logo} alt="Jese image"></Image>
-                            <div class="pl-3">
-                                <div class="text-base font-semibold">Thomas Lean</div>
-                                <div class="font-normal text-gray-500">thomes@gmail.com</div>
-                            </div>
-                        </th>
-                        <td class="px-6 py-4">
-                        88888888
-                        </td>
-                        <td class="px-6 py-4">
-                            {/**<div class="flex items-center">
-                                <div class="h-2.5 w-2.5 rounded-full bg-green-500 mr-2"></div> Online
-                            </div>*/}
-                        </td>
-                        <td class="px-6 py-4">
-                            <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Editar</a>
-                        </td>
-                    </tr>
-                    <tr class="bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-600">
-                        <td class="w-4 pl-6">
-                            <input  id="link-checkbox" type="checkbox" value="" class="w-5 h-5 rounded-md mr-2"/> 
-                        </td>
-                        <th scope="row" class="flex items-center px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                            <Image  width="10"  height="10" class="w-10 h-10 rounded-full" src={logo} alt="Jese image"></Image>
-                            <div class="pl-3">
-                                <div class="text-base font-semibold">Leslie Livingston</div>
-                                <div class="font-normal text-gray-500">leslie@gmail.com</div>
-                            </div>
-                        </th>
-                        <td class="px-6 py-4">
-                        88888888
-                        </td>
-                        <td class="px-6 py-4">
-                            {/**<div class="flex items-center">
-                                <div class="h-2.5 w-2.5 rounded-full bg-green-500 mr-2"></div> Online
-                            </div>*/}
-                        </td>
-                        <td class="px-6 py-4">
-                            <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Editar</a>
-                        </td>
-                    </tr>
+                    
+                ))}
+                
                 </tbody>
+                
             </table>
+            {alumnos.length > 0 ? '': 
+                    <center>
+                    <div className='p-4'>
+                        <span className='m-4'>No hay alumnos asignados al grupo</span>
+                    </div>
+                    </center>
+                }
         </div>
 
     )

@@ -43,9 +43,9 @@ const SignUp = () => {
         const updates = {
           username: username,
           updated_at: new Date(),
-          role: 'Docente',
+          role: 'Alumno',
           email: formData.email,
-
+          activo: true,
         };
         //const { } = await supabase.from('profiles').update(updates).eq('id', arrayUser[0]);
         const { } = await supabase.from('profiles').update(updates).eq('id', arrayUser[0]);

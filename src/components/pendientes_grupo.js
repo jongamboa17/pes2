@@ -139,6 +139,9 @@ export default function Pendientes_grupo() {
 
             setAlumnos(alumnosRestantes);
             setAlumnosSeleccionados([]);
+            //vaciar el grupo seleccionado y grado seleccionado
+            setGrupoSeleccionado('');
+            setGradoSeleccionado('');
             toast.success('Alumno agregado correctamente');
             
             }
