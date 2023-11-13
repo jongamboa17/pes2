@@ -11,6 +11,7 @@ import Nuevo_usuario from "@/components/forms/nuevo_usuario"
 import Nuevo_docente from '@/components/forms/nuevo_docente';
 import Nueva_asignatura from "@/components/forms/nueva_asignatura"
 import Alumnos_pendientes from '@/components/alumnos_pendientes';
+import Pendientes_grupo from '@/components/pendientes_grupo';
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
@@ -138,12 +139,9 @@ export default async function page() {
                                  * <span class="bg-yellow-100 text-yellow-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full dark:bg-yellow-900 dark:text-yellow-300 border border-yellow-300">12</span>
                                  */}
                                 </h2>
-                                <button type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center mr-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                                <svg class="w-3 h-3 text-white dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.1" d="M9 1v16M1 9h16"/>
-                                </svg>  
-                                </button>
+                                
                             </center>
+                            <Pendientes_grupo/>
                         </div>
                         <div className="bg-white shadow-xl rounded-lg  min-h-[400px] row-span-5">
                             <center>

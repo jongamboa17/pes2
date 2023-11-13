@@ -10,6 +10,7 @@ export default function Alumnos_pendientes() {
   //estado para manejar usuarios seleccionados
   const [seleccionados, setSeleccionados] = useState([]);
   const supabase = createClientComponentClient();
+  
   useEffect(() => {
    //traer datos de la base de datos cantidad de docentes
    
@@ -112,6 +113,7 @@ export default function Alumnos_pendientes() {
               </div>
             </center>
           : ''}
+      {/**lista de alumnos inactivos */}
       <ul class="h-60 py-2 overflow-y-auto text-gray-700 dark:text-gray-200" aria-labelledby="dropdownUsersButton">
         {alumnos.map((docente) => (
         <li key={docente.id}>
@@ -123,7 +125,7 @@ export default function Alumnos_pendientes() {
             checked={seleccionados.some(item => item.id === docente.id)}
           />
             <Image class="w-6 h-6 mr-2 rounded-full"  src={logo2} alt="Jese image"/>
-            {docente.name}{' '}{docente.lastname} 
+            <span className='font-bold'>{docente.name}{' '}{docente.lastname} </span>
           </a>
         </li>
           ))}
