@@ -10,6 +10,9 @@ export default function Nueva_asignatura({ modalId }){
     const [nombreAsignatura, setNombreAsignatura] = useState('');
     const [gradosSeleccionados, setGradosSeleccionados] = useState([]);
     const [grados, setGrados] = useState([]);
+    const [docentes, setDocentes] = useState([]);
+    const [docenteSeleccionado, setDocenteSeleccionado] = useState('');
+    let profileData = [];
     
     const cerrarModal = () => {
         document.getElementById(modalId).checked = false;
@@ -46,9 +49,28 @@ export default function Nueva_asignatura({ modalId }){
         }
         return grados;
         };
+    
+        const fetchDocentes = async () => {
+            const { data, error } = await supabase
+                .from('profiles') // Reemplazar 'docentes' con el nombre real de tu tabla
+                .select('*'); // Ajustar para seleccionar solo los campos necesarios
+        
+            if (error) {
+                console.error('Error al obtener datos de docentes:', error);
+            } else {
+                console.log('Docentes:', data);
+                //profileData = data;
+                //filtrar los docentes por rol
+                profileData = data.filter((docente) => docente.role === 'Docente');
+                setDocentes(profileData);
+                console.log('DocentesSSS:', profileData);
+            }
+            };
+            
 
     useEffect(() => {
         obtenerGrados();
+        fetchDocentes();
     }, []); 
 
     
@@ -57,6 +79,11 @@ export default function Nueva_asignatura({ modalId }){
     //estados para manejar cambio en el input de nombre de asignatura y grados seleccionados
     const handleAsignaturaChange = (e) => {
         setNombreAsignatura(e.target.value);
+    };
+
+    const handleDocenteChange = (event) => {
+        setDocenteSeleccionado(event.target.value);
+        console.log('Docente seleccionado:', event.target.value);
     };
     
     const handleCheckboxChange = (gradoId) => {
@@ -107,7 +134,8 @@ export default function Nueva_asignatura({ modalId }){
         // Insertar en la tabla intermedia
         const relaciones = gradosSeleccionados.map(gradoId => ({
             grado_id: gradoId,
-            asignatura_id: asignaturaInsertada.id
+            asignatura_id: asignaturaInsertada.id,
+            docente_id: docenteSeleccionado
         }));
     
         const responseRelaciones = await supabase
@@ -122,6 +150,7 @@ export default function Nueva_asignatura({ modalId }){
             cerrarModal(); // Cierra el modal
             setNombreAsignatura(''); // Restablecer el nombre de la asignatura
             setGradosSeleccionados([]); // Limpiar los grados seleccionados
+            setDocenteSeleccionado(''); // Limpiar el docente seleccionado
         }
     };
     
@@ -152,8 +181,14 @@ export default function Nueva_asignatura({ modalId }){
                                 <p class="float-left font-bold ">Asignar a:</p> 
                                 <p class="float-right">
                                     <button onClick={seleccionarTodosGrados} className="text-white inline-flex items-center bg-blue-700 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
-                                        Seleccionar Todos
+                                        Todos
                                     </button> 
+                                    <select className='select select-bordered w-30 max-w-xs m-2' onChange={handleDocenteChange} value={docenteSeleccionado}>
+                                        <option disabled value="">Docente:</option>
+                                        {docentes.map((docente, index) => (
+                                            <option key={docente.id} value={docente.id}> {docente.name}</option>
+                                            ))}
+                                    </select> 
                                     
                                 </p>
                             </div>
@@ -174,6 +209,9 @@ export default function Nueva_asignatura({ modalId }){
                                 <label for="bordered-checkbox-1" class="w-full py-4 ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">{grado.nombre}</label>
                             </div>
                             ))}
+                            
+                              
+
                         </div>
                         <button type="submit"
                                 onClick={handleSubmit}
