@@ -2,21 +2,20 @@
 import 'flowbite';
 import Navbar from '@/components/navbar';
 import SignUp from 'src/components/Auth/SignUp';
-import Accordion_docentes from '@/components/accordion/accordion_docentes';
-import Accordion_docentes2 from '@/components/accordion/accordion_docentes2';
-import Accordion2 from '@/components/accordion/accordion2';
-import Accordion3 from '@/components/accordion/accordion3';
-import Modal from "@/components/modals/modal_usuario"
+
 import Nuevo_usuario from "@/components/forms/nuevo_usuario"
 import Nuevo_docente from '@/components/forms/nuevo_docente';
 import Nueva_asignatura from "@/components/forms/nueva_asignatura"
-import Alumnos_pendientes from '@/components/alumnos_pendientes';
-import Pendientes_grupo from '@/components/pendientes_grupo';
+
+import AdminParent from '@/components/adminParent';
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
+
+
 export default async function page() {
     const supabase = createServerComponentClient({ cookies });
+    
     const {
         data: { user },
       } = await supabase.auth.getUser();
@@ -88,6 +87,9 @@ export default async function page() {
     if(!user){
         redirect('/sign-in');
     }
+
+
+
     
   return (
     <>  
@@ -95,73 +97,7 @@ export default async function page() {
 
        
         {/**------------------ */}
-        <div className="py-1 px-5 grid grid-cols-1 gap-x-2 gap-y-3 grid-flow-row-dense">
-            
-            {/**botones */}
-            {/*div de los botones*/}
-            <div className="rounded-lg min-h-[50px] row-span-2">
-                <div className="p-1 text-center">
-                    <button className=" px-5 sm:p-5 text-white bg-blue-700 hover:bg-blue-800 
-                                        focus:outline-none font-medium text-sm rounded-lg py-2.5 text-center mr-5 ">
-                        <label htmlFor="my_modal_20" className="">Nuevo Docente</label>
-                    </button>
-                    <button className=" px-5 sm:p-5 text-white bg-blue-700 hover:bg-blue-800 
-                                        focus:outline-none font-medium text-sm rounded-lg py-2.5 text-center mr-5 ">
-                        <label htmlFor="my_modal_7" className="">Nuevo Alumno</label>
-                    </button>
-                    <button className=" px-5 sm:p-5 text-white bg-blue-700 hover:bg-blue-800 
-                                        focus:outline-none font-medium text-sm rounded-lg py-2.5 text-center mr-5 ">
-                        <label htmlFor="my_modal_8" className="">Nueva Asignatura</label>
-                    </button>
-                    
-                </div>    
-            </div> 
-            
-
-            <div className="py-1 px-5 grid grid-cols-2   gap-y-3 grid-flow-row-dense ">
-                <div className="bg-white rounded-lg shadow-xl min-h-[400px] row-span-5 ">
-                    <Accordion3></Accordion3>
-                </div>
-                <div className="bg-white rounded-lg  min-h-[400px] row-span-5">
-                    <div className=" px-5 grid grid-cols-1 gap-x-2 gap-y-3 grid-flow-row-dense">
-                        
-                            
-                            <Accordion_docentes2></Accordion_docentes2>
-                        
-                        
-                    </div>
-                    <div className="py-1 px-5 grid grid-cols-2 gap-x-2 gap-y-3 grid-flow-row-dense">
-                        <div className="bg-white shadow-xl rounded-lg  min-h-[400px] row-span-5">
-                            <center>
-                                <h2 className='font-bold py-3'>Alumnos Pendientes {'  '}    
-                                        
-                                    {/**
-                                 * <span class="bg-yellow-100 text-yellow-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full dark:bg-yellow-900 dark:text-yellow-300 border border-yellow-300">12</span>
-                                 */}
-                                </h2>
-                                
-                            </center>
-                            <Pendientes_grupo/>
-                        </div>
-                        <div className="bg-white shadow-xl rounded-lg  min-h-[400px] row-span-5">
-                            <center>
-                                <h2 className='font-bold py-3'>Alumnos Inactivos {'  '}
-                                {/**
-                                 * <span class="bg-yellow-100 text-yellow-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full dark:bg-yellow-900 dark:text-yellow-300 border border-yellow-300">12</span>
-                                 */}
-                                
-                                
-                                </h2>
-                                
-                                
-                            </center>
-                            <Alumnos_pendientes></Alumnos_pendientes>
-                        </div>
-                    </div>
-                    
-                </div> 
-            </div>
-        </div>
+        <AdminParent/>
         
         <div className="py-5 px-5 grid grid-cols-4 gap-x-2 gap-y-3 grid-flow-row-dense"> 
             <div class="bg-green-600 rounded-md flex flex-col items-center justify-center py-2">

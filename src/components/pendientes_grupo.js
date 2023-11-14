@@ -5,7 +5,7 @@ import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { useEffect, useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-export default function Pendientes_grupo() {
+export default function Pendientes_grupo({alumnosPendientes,onEnviarDatos}) {
     const supabase = createClientComponentClient();
     const [alumnos, setAlumnos] = useState([]);
     const [grados, setGrados] = useState([]);
@@ -17,10 +17,30 @@ export default function Pendientes_grupo() {
     
   //traer los alumnos que no tengan grupo en la base de datos
   useEffect(() => {
+    
+    // Función para obtener los detalles de los alumnos por ids
+    const obtenerDetallesAlumnos = async (ids) => {
+        try {
+            const { data, error } = await supabase
+                .from('profiles')
+                .select('*')
+                .in('id', ids); // Filtra los alumnos cuyos IDs están en el array 'ids'
+
+            if (error) throw error;
+            return data;
+        } catch (error) {
+            console.error('Error al obtener detalles de alumnos:', error);
+            return [];
+        }
+    };
+
+
+
     //traer datos de la base de datos cantidad de docentes
     
     let profileData = [];
     const fetchAlumnos = async () => {
+    const detallesAlumnosPendientes = await obtenerDetallesAlumnos(alumnosPendientes);    
     const { data, error } = await supabase
         .from('profiles') // Reemplazar 'docentes' con el nombre real de tu tabla
         .select('*'); // Ajustar para seleccionar solo los campos necesarios
@@ -31,13 +51,29 @@ export default function Pendientes_grupo() {
         //console.log('Alumnos:', data);
         //profileData = data;
         //filtrar los docentes por rol y campo activo sea igual a false
- 
+        
         profileData = data.filter((alumno) => alumno.role === 'Alumno' && alumno.Grupo === null && alumno.activo === true);
         setAlumnos(profileData);
+        // Filtrar los duplicados
+        const alumnosUnicos = detallesAlumnosPendientes.filter(pendiente => 
+            !data.some(activo => activo.id === pendiente.id));
+
+        // Combinar los listados de alumnos sin duplicados
+        const alumnosActualizados = [...alumnosUnicos, ...profileData];
+        setAlumnos(alumnosActualizados);
+
         //console.log('Alumnos:', profileData);
     }
     };
-    //pbetener grados de la base de datos
+    
+    
+    
+     fetchAlumnos();
+   }, [alumnosPendientes]);
+    
+    //useEffect para traer grados
+    useEffect(() => {
+        //pbetener grados de la base de datos
     const obtenerGrados = async () => {
         let { data: gradosObtenidos, error } = await supabase
             .from('grados')
@@ -50,10 +86,7 @@ export default function Pendientes_grupo() {
         }
     };
     obtenerGrados();
-     fetchAlumnos();
-   }, []);
-    
-    
+    }, []);
 
     const reordenarGrados = (grados) => {
         if (grados.length > 1) {
@@ -115,6 +148,9 @@ export default function Pendientes_grupo() {
     
     const asignarAlumnosAGrupo = async () => {
         let actualizados = false;
+        //llamar funcion para enviar datos al componente padre y enviar seleccionados
+        
+        
         for (const alumnoId of alumnosSeleccionados) {
             const { error } = await supabase
                 .from('profiles') // Asume que 'profiles' es la tabla donde se almacenan los alumnos
@@ -149,16 +185,31 @@ export default function Pendientes_grupo() {
        
     };
 
-   
+    const enviarDatos = () => {
+        onEnviarDatos(alumnosSeleccionados);
+    }
 
+    const manejarClick = () => {
+        enviarDatos();
+        asignarAlumnosAGrupo();
+        
+        // Puedes agregar más funciones aquí si es necesario
+    }
+
+   
+    
     
     
     
     return (
     <>
       <ToastContainer />
+      {/** {alumnosPendientesGrupo.map((alumno) => (
+        <p>{alumno.role}</p>
+      ))}
+      */}
         <center>
-            <button onClick={asignarAlumnosAGrupo} type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center mr-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+            <button onClick={manejarClick}  type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center mr-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                 <svg class="w-3 h-3 text-white dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.1" d="M9 1v16M1 9h16"/>
                 </svg>  

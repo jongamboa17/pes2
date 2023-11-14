@@ -3,9 +3,35 @@ import logo from '../../utilities/logo1.png'
 import 'flowbite'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { useEffect, useState } from 'react';
-export default function Tabla_usuarios_grupos({grupoId}) {    
+export default function Tabla_usuarios_grupos({grupoId,nuevoUsuario}) {    
     const [alumnos, setAlumnos] = useState([]);
     const supabase = createClientComponentClient();
+
+    // Función para obtener detalles de los usuarios por sus IDs
+    const obtenerDetallesUsuarios = async (idsUsuarios) => {
+        const { data, error } = await supabase
+            .from('profiles')
+            .select('*')
+            .in('id', idsUsuarios).eq('Grupo', grupoId);
+
+        if (error) {
+            console.error('Error al obtener detalles de usuarios:', error);
+            return [];
+        }
+
+        return data;
+    }
+
+    useEffect(() => {
+        // Actualiza la lista de alumnos cuando hay nuevos usuarios
+        if (nuevoUsuario && nuevoUsuario.length > 0) {
+            obtenerDetallesUsuarios(nuevoUsuario).then(nuevosDetalles => {
+                // Combina los nuevos detalles con los alumnos existentes
+                setAlumnos(prevAlumnos => [...prevAlumnos, ...nuevosDetalles]);
+            });
+        }
+    }, [nuevoUsuario,grupoId]);
+
 
     useEffect(() => {
         const fetchAlumnos = async () => {

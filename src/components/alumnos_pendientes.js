@@ -5,85 +5,45 @@ import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { useEffect, useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-export default function Alumnos_pendientes() {
+export default function Alumnos_pendientes({ alumnosInactivos, onActivarAlumnos }) {
   const [alumnos, setAlumnos] = useState([]);
+  
   //estado para manejar usuarios seleccionados
   const [seleccionados, setSeleccionados] = useState([]);
-  const supabase = createClientComponentClient();
+ 
+  const handleCheckboxChange = (alumnoId) => {
+    setSeleccionados(prev => {
+      return prev.includes(alumnoId) ? prev.filter(id => id !== alumnoId) : [...prev, alumnoId];
+  });
+    console.log('Seleccionados:', seleccionados);
+};
+
+
+
   
+  const activarSeleccionados = async () => {
+    if (seleccionados.length > 0) {
+        const resultado = await onActivarAlumnos(seleccionados);
+        if (resultado) {
+            toast.success('Alumnos activados correctamente');
+            setSeleccionados([]); // Limpiar la selección después de activar
+        } else {
+            toast.error('Error al activar alumnos');
+        }
+    } else {
+        toast.error('No hay alumnos seleccionados');
+    }
+};
+
+
+  
+  //useeffect para observar los seleccionados
   useEffect(() => {
-   //traer datos de la base de datos cantidad de docentes
-   
-   let profileData = [];
-   const fetchAlumnos = async () => {
-   const { data, error } = await supabase
-       .from('profiles') // Reemplazar 'docentes' con el nombre real de tu tabla
-       .select('*'); // Ajustar para seleccionar solo los campos necesarios
-
-   if (error) {
-       console.error('Error al obtener datos de docentes:', error);
-   } else {
-       //console.log('Alumnos:', data);
-       //profileData = data;
-       //filtrar los docentes por rol y campo activo sea igual a false
-
-       profileData = data.filter((alumno) => alumno.role === 'Alumno' && alumno.activo === false);
-       setAlumnos(profileData);
-   }
-   };
-    fetchAlumnos();
-  }, []);
-  
-     //guardar usuarios seleccionados en un array
-    const handleCheckboxChange = (alumnoId) => {
-      setSeleccionados((prevSeleccionados) => {
-        // Verifica si el alumno ya está en la lista de seleccionados
-        const yaSeleccionado = prevSeleccionados.some(item => item.id === alumnoId);
-        if (yaSeleccionado) {
-          // Si ya está seleccionado, quítalo de la lista
-          return prevSeleccionados.filter(item => item.id !== alumnoId);
-        } else {
-          // Si no está seleccionado, agrégalo a la lista
-          return [...prevSeleccionados, { id: alumnoId }];
-        }
-      });
-      //console.log(seleccionados);
-    };
-
-    const activarSeleccionados = async () => {
-      let actualizados = false; // Bandera para saber si se realizaron actualizaciones
+    console.log('Seleccionados:', seleccionados);
+  }, [seleccionados]);
     
-      for (const alumno of seleccionados) {
-        const { data,error } = await supabase
-          .from('profiles')
-          .update({ activo: true })
-          .eq('id', alumno.id);
     
-        if (error) {
-          console.error('Error al actualizar alumno:', alumno.id, error);
-        } else {
-          actualizados = true; // Se marca que hubo actualizaciones exitosas
-          console.log('Alumno actualizado:', alumno.id , data);
-         
-        }
-      }
-    
-      // Si se realizaron actualizaciones, actualizar el estado de alumnos
-      if (actualizados) {
-        const alumnosActualizados = alumnos.filter(
-          alumno => !seleccionados.some(sel => sel.id === alumno.id)
-        );
-    
-        setAlumnos(alumnosActualizados); // Actualizar el estado con los alumnos restantes
-        setSeleccionados([]); // Limpiar los seleccionados
-        // Mostrar mensaje de éxito si es mas de uno o otro si es solo uno
-        if (alumnosActualizados.length === 1) {
-        toast.success('Alumno activado correctamente');
-        } else {
-          toast.success('Alumnos activados correctamente');
-        }
-      }
-    };
+     
        
 
     
@@ -106,7 +66,7 @@ export default function Alumnos_pendientes() {
         </button>
       </center>
       {/**mensaje cuando no hay alumnos inactivos */}
-      {alumnos.length===0 ? 
+      {alumnosInactivos.length===0 ? 
             <center>
               <div className='p-4'>
                 <span className='m-4'>No hay alumnos inactivos</span>
@@ -115,17 +75,17 @@ export default function Alumnos_pendientes() {
           : ''}
       {/**lista de alumnos inactivos */}
       <ul class="h-60 py-2 overflow-y-auto text-gray-700 dark:text-gray-200" aria-labelledby="dropdownUsersButton">
-        {alumnos.map((docente) => (
-        <li key={docente.id}>
+        {alumnosInactivos.map((alumno) => (
+        <li key={alumno.id}>
           <a href="#" class="flex items-center px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
           <input
             type="checkbox"
             className="w-5 h-5 rounded-md mr-2"
-            onChange={() => handleCheckboxChange(docente.id)}
-            checked={seleccionados.some(item => item.id === docente.id)}
+            onChange={() => handleCheckboxChange(alumno.id)}
+            checked={seleccionados.includes(alumno.id)}
           />
             <Image class="w-6 h-6 mr-2 rounded-full"  src={logo2} alt="Jese image"/>
-            <span className='font-bold'>{docente.name}{' '}{docente.lastname} </span>
+            <span className='font-bold'>{alumno.name}{' '}{alumno.lastname} </span>
           </a>
         </li>
           ))}

@@ -3,9 +3,16 @@ import Tabla_usuarios_grupos from '../tablas/tabla_usuarios_grupos'
 import Criterios_evaluacion from '../forms/criterios_evaluacion'
 import { useState, useEffect } from 'react'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
-export default function Accordion3(){
+export default function Accordion3({nuevosAlumnos}){
     const [gradosConGrupos, setGradosConGrupos] = useState([]);
     const supabase = createClientComponentClient();
+    //constante para guardar los cambios de nuevosAlumnos
+    
+    useEffect(() => {
+        //console cuando nuevosAlumnos cambia
+        console.log('nuevosAlumnosDESDEACORDION:', nuevosAlumnos);
+    }, [nuevosAlumnos]);
+    
 
     useEffect(() => {
         const obtenerGradosYGrupos = async () => {
@@ -88,7 +95,7 @@ export default function Accordion3(){
                                 </div>
                                 
                             </div>
-                            <Tabla_usuarios_grupos grupoId={grupo.id}></Tabla_usuarios_grupos>
+                            <Tabla_usuarios_grupos nuevoUsuario={nuevosAlumnos} grupoId={grupo.id}></Tabla_usuarios_grupos>
                         </div>
                     </div>
                     ))}
