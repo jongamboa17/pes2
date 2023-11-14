@@ -80,10 +80,13 @@ export default function Tabla_usuarios_grupos({grupoId,nuevoUsuario}) {
                 {alumnos.map((alumno) => (
                     <tr key={alumno.id} class=" bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                         <td class="w-4 pl-6">
-                            <input  id="link-checkbox" type="checkbox" value="" class="w-5 h-5 rounded-md mr-2"/>
+                            {/**<input  id="link-checkbox" type="checkbox" value="" class="w-5 h-5 rounded-md mr-2"/> */}
                             
                         </td>
                         <th scope="row" class="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
+                            {/**
+                             * 
+                             */}
                             <Image width="10"  height="10" class="w-10 h-10 rounded-full" src={logo} alt="Jese image"></Image>
                             <div class="pl-3">
                                 <div class="text-base font-semibold">{alumno.name}{' '}{alumno.lastname}</div>
