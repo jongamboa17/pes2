@@ -1,4 +1,8 @@
+import 'flowbite';
 export default function Criterios_evaluacion() {
+    function alerta(){
+        alert("hola");
+    }
     return (
         <>
         
@@ -21,44 +25,69 @@ export default function Criterios_evaluacion() {
                             <li>
                                 <a href="#" class="flex items-center px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
                                     <input id="link-checkbox" type="checkbox" value="" class="w-5 h-5 rounded-md mr-2"/>
-                                    <span class="flex-grow">Proy</span>
-                                    <input id="" type="text" value="" class="w-10 h-10 rounded-md" placeholder="%"/>
+                                    <span class="flex-grow">Proyecto
+                                        
+                                    </span>
+                                    <input type="email" id="default-search" class=" w-11 h-10 mr-1 ml-2 rounded-md" placeholder="%" />
+                                    
                                 </a>
+                               
+                                
                             </li>
                             <li>
                                 <a href="#" class="flex items-center px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
                                     <input id="link-checkbox" type="checkbox" value="" class="w-5 h-5 rounded-md mr-2"/>
-                                    <span class="flex-grow">Proyecto 2</span>
-                                    <input id="" type="text" value="" class="w-10 h-10 rounded-md" placeholder="%"/>
+                                    <span class="flex-grow">Exposicion
+                                        
+                                    </span>
+                                    <input type="email" id="default-search" class=" w-11 h-10 mr-1 ml-2 rounded-md" placeholder="%" />
+                                   
                                 </a>
+                                
                             </li>
                             <li>
                                 <a href="#" class="flex items-center px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
                                     <input id="link-checkbox" type="checkbox" value="" class="w-5 h-5 rounded-md mr-2"/>
-                                    <span class="flex-grow">Proy</span>
-                                    <input id="" type="text" value="" class="w-10 h-10 rounded-md" placeholder="%"/>
+                                    <span class="flex-grow">sd
+                                        
+                                    </span>
+                                    <input type="email" id="default-search" class=" w-11 h-10 mr-1 ml-2 rounded-md" placeholder="%" />
+                                   
                                 </a>
+                                
                             </li>
                             <li>
                                 <a href="#" class="flex items-center px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
                                     <input id="link-checkbox" type="checkbox" value="" class="w-5 h-5 rounded-md mr-2"/>
-                                    <span class="flex-grow">Proyecto 2</span>
-                                    <input id="" type="text" value="" class="w-10 h-10 rounded-md" placeholder="%"/>
+                                    <span class="flex-grow">sd
+                                        
+                                    </span>
+                                    <input type="email" id="default-search" class=" w-11 h-10 mr-1 ml-2 rounded-md" placeholder="%" />
+                                   
                                 </a>
+                                
                             </li>
                             <li>
                                 <a href="#" class="flex items-center px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
                                     <input id="link-checkbox" type="checkbox" value="" class="w-5 h-5 rounded-md mr-2"/>
-                                    <span class="flex-grow">Proy</span>
-                                    <input id="" type="text" value="" class="w-10 h-10 rounded-md" placeholder="%"/>
+                                    <span class="flex-grow">sd
+                                        
+                                    </span>
+                                    <input type="email" id="default-search" class=" w-11 h-10 mr-1 ml-2 rounded-md" placeholder="%" />
+                                   
                                 </a>
+                                
                             </li>
                             <li>
                                 <a href="#" class="flex items-center px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
                                     <input id="link-checkbox" type="checkbox" value="" class="w-5 h-5 rounded-md mr-2"/>
-                                    <span class="flex-grow">Proyecto 2</span>
-                                    <input id="" type="text" value="" class="w-10 h-10 rounded-md" placeholder="%"/>
+                                    <span class="flex-grow">sd
+                                        
+                                    </span>
+                                    <input type="email" id="default-search" class=" w-11 h-10 mr-1 ml-2 rounded-md" placeholder="%" />
+                                   
                                 </a>
+                                
                             </li>
                             
                             </ul>
@@ -166,8 +195,9 @@ export default function Criterios_evaluacion() {
                             </li>
                         </ul>
                         */}
+                    <input type="number" id="default-search" class=" text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Nota mínima aprob" required/>
                     </div>
-                    <input type="text" id="" class="   text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Nota mínima" required/>
+                    
                     </div>  
                     
                 </div>
@@ -178,9 +208,13 @@ export default function Criterios_evaluacion() {
             <div class="  bg-white rounded-lg shadow dark:bg-gray-800 sm:p-5 ">
                 
                 <center>
-                    <button type="submit" class="mb-2 text-white inline-flex items-center bg-green-600 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
+                    <button type="submit" class="mb-2 mr-2 text-white inline-flex items-center bg-green-600 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
                     {/**<svg class="mr-1 -ml-1 w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd"></path></svg>**/}
                     Guardar Cambios
+                    </button>
+                    <button type="submit" class="mb-2 text-white inline-flex items-center bg-red-600 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
+                    {/**<svg class="mr-1 -ml-1 w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd"></path></svg>**/}
+                    Eliminar criterios
                     </button>
                 </center>
            
