@@ -18,10 +18,10 @@ export default function SignOut() {
   return (
     <div className='px-2'>
     <button type="button" 
-            class=" text-white  hover:bg-green-600 focus:ring-4 
-                    focus:outline-none focus:ring-blue-300 font-medium 
+            class=" text-white  hover:bg-green-400 focus:ring-4 
+                    focus:outline-none focus:ring-white font-medium 
                     rounded-full text-sm p-2.5 text-center inline-flex 
-                    items-center mr-2 dark:bg-blue-600 dark:hover:bg-blue-700 
+                    items-center mr-2 dark:bg-white dark:hover:bg-white
                     dark:focus:ring-blue-800 "
                     onClick={handleSignOut}
     >

@@ -1,7 +1,4 @@
 
-import Image from 'next/image'
-import logo from '@/utilities/logo1.png'
-import Modal from "@/components/modals/modal_usuario"
 import Editar_calificaciones from '../forms/editar_calificaciones'
 import Criterios_evaluacion from '../forms/criterios_evaluacion'
 import { useState, useEffect } from 'react'
@@ -68,7 +65,7 @@ export default function Tabla_alumnos_calificaciones() {
                         </th>
                         <th scope="col" class="invisible sm:visible py-3">
                             <center>
-                            Acciones
+                            
                             </center>
                         </th>
                         
@@ -107,18 +104,22 @@ export default function Tabla_alumnos_calificaciones() {
                         </td>
                         <th scope="col" class=" py-3">
                             <center>    
-                                <span className='font-bold bg-green-300 px-5 py-5'>100</span>
+                                <span className='font-bold bg-green-600 px-5 py-3 rounded-md text-white'>100</span>
                             </center>
                         </th>
                         <td class=" py-4">
                             <center>
-                                <button type="button" class=" text-white bg-green-600 hover:bg-blue-800 
-                                                                focus:ring-4 focus:outline-none focus:ring-blue-300  
-                                                                font-medium rounded-lg text-sm px-3 py-2.5 text-center 
-                                                                inline-flex items-center  dark:bg-blue-600 dark:hover:bg-blue-700 
-                                                                dark:focus:ring-blue-800">
-                                        <label htmlFor="my_modal_30" className="">Editar</label> 
-                                </button>
+                                <label htmlFor="my_modal_30" className="text-white bg-green-600 hover:bg-blue-800 
+                                                        focus:ring-4 focus:outline-none focus:ring-blue-300  
+                                                        font-medium rounded-lg text-sm px-3 py-2.5 text-center 
+                                                        inline-flex items-center  dark:bg-blue-600 dark:hover:bg-blue-700 
+                                                        dark:focus:ring-blue-800">
+                                    <svg class="w-4 h-4 text-white dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 18">
+                                        <path d="M12.687 14.408a3.01 3.01 0 0 1-1.533.821l-3.566.713a3 3 0 0 1-3.53-3.53l.713-3.566a3.01 3.01 0 0 1 .821-1.533L10.905 2H2.167A2.169 2.169 0 0 0 0 4.167v11.666A2.169 2.169 0 0 0 2.167 18h11.666A2.169 2.169 0 0 0 16 15.833V11.1l-3.313 3.308Zm5.53-9.065.546-.546a2.518 2.518 0 0 0 0-3.56 2.576 2.576 0 0 0-3.559 0l-.547.547 3.56 3.56Z"/>
+                                        <path d="M13.243 3.2 7.359 9.081a.5.5 0 0 0-.136.256L6.51 12.9a.5.5 0 0 0 .59.59l3.566-.713a.5.5 0 0 0 .255-.136L16.8 6.757 13.243 3.2Z"/>
+                                    </svg>    
+                                </label> 
+                                
                             </center>
                         </td>
                         
