@@ -51,6 +51,7 @@ export default async function Home() {
             <div className='py-4 px-4 mr-4'>
                 <Accordion_calificaciones2/>
             </div>
+            
             </>
     );
 }
