@@ -145,9 +145,6 @@ export default async function page() {
             <label className="modal-backdrop" htmlFor="my_modal_8">Close</label>
         </div>
 
-
-       
-       
     </>
   )
 }

@@ -1,13 +1,14 @@
 // @ts-nocheck
 
 'use client';
-
+import logo from '../../../src/utilities/logo1.png';
 import React, { useState } from 'react';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import cn from 'classnames';
 import { Field, Form, Formik } from 'formik';
 import Link from 'next/link';
 import * as Yup from 'yup';
+import Image from 'next/image'
 
 const SignInSchema = Yup.object().shape({
   email: Yup.string().email('Correo Invalido').required('Requerido'),
@@ -36,11 +37,16 @@ const SignIn = () => {
     <>
     
     <h1 className="mb-12 text-2xl font-bold sm:text-5xl">
-              <span className="font-black text-green-500">Eco Centro Educativo Braulio C.</span>
+              {/** <span className="font-black text-green-500">Eco Centro Educativo Braulio C.</span>*/}
               
     </h1>
     <div className="card">
       <h2 className=" w-full text-center">Inicio sesión</h2>
+      <Image
+            className="mx-auto h-50 w-auto"
+            src={logo}
+            alt="Your Company"
+          />
       <Formik
         initialValues={{
           email: '',
