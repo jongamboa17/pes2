@@ -104,7 +104,7 @@ export default function Tabla_alumnos_calificaciones() {
                         </td>
                         <th scope="col" class=" py-3">
                             <center>    
-                                <span className='font-bold bg-green-600 px-5 py-3 rounded-md text-white'>100</span>
+                                <span className='font-bold bg-red-500 px-5 py-3 rounded-md text-white'>60</span>
                             </center>
                         </th>
                         <td class=" py-4">
