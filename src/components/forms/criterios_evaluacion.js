@@ -6,54 +6,41 @@ export default function Criterios_evaluacion() {
     const [criterios, setCriterios] = useState([]);
     const [criteriosSeleccionados, setCriteriosSeleccionados] = useState([]);
     const [porcentajes, setPorcentajes] = useState([]);
+    const [forceUpdate, setForceUpdate] = useState(0);
+    const [newCriteria, setNewCriteria] = useState('');
+    const [porcentage, setPorcentage] = useState('');
     
     const fetchCriterios = async () => {
+            const { data } = await supabase.from('criterios_evaluacion').select('*');
         
-        try {
-            const { data, error } = await supabase
-                .from('criterios_evaluacion')
-                .select('*');
-            console.log('After Supabase call', data, error);
-    
-           
-            setCriterios(data);
-        
-
-        } catch (error) {
-            console.error('Error fetching data:', error);
-        }
+            if (data) {
+              setCriterios(data);
+            }
+          
     }
-
-    useEffect(() => {
-        console.log('Criterios updated:', criterios);
-    }, [criterios]);
-    
-        
-        useEffect(() => {
-            fetchCriterios(); // Obtener criterios inicialmente
+    const addCriteria = async () => {
+        await supabase
+          .from('criterios_evaluacion')
+          .insert([
+            { 
+                name: newCriteria,
+                weight: porcentage,
             
-            // Establecer la suscripción en tiempo real
-            const subscription = supabase
-                .channel('table-db-changes')
-                .on('postgres_changes', {
-                    event: '*',
-                    schema: 'public',
-                    table: 'criterios_evaluacion'
-                }, payload => {
-                    console.log('Realtime update:', payload);
-                    fetchCriterios(); // Re-fetch criterios when a change occurs
-                    
-
-                })
-                .subscribe();
+            },
+          ]);
     
-            // Función de limpieza para cancelar la suscripción
-            return () => {
-                
-                supabase.removeChannel(subscription)
-            };
-        }, []);
-    
+        await fetchCriterios();
+        setNewCriteria('');
+        setPorcentage('');
+      }
+  
+    useEffect(() => {
+        fetchCriterios(); // Obtener criterios inicialmente
+        
+        
+    }, []);
+        
+        console.log('Criterios before rendering:', criterios);
     return (
         <>
             <div class="relative p-4 bg-white rounded-lg shadow dark:bg-gray-800 sm:p-5 ">
@@ -69,6 +56,7 @@ export default function Criterios_evaluacion() {
                     
                         <div class="pb-1">
                             <h3 className=" pl-4 pb-2 font-medium">Seleccione los criterios:</h3>
+                            
                             {/**Agregar campos */}
                             <ul class="h-60 py-2 overflow-y-auto text-gray-700 dark:text-gray-200" aria-labelledby="dropdownUsersButton">
                                 {criterios.map((criterio) => (
@@ -90,11 +78,19 @@ export default function Criterios_evaluacion() {
                 <div className="rounded-lg min-h-[80px] flex flex-col md:flex-row gap-2">
                     <div className="mt-6 w-28">  
                         <div className="py-1  gap-y-3 flex-grow">
-                            <input type="text" id="default-search" class="mb-1 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Criterio" required/>
-                            <input type="number" id="default-search" class=" text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="%" required/>                               
+                            <input 
+                            value={newCriteria} onChange={(e) => {
+                                setNewCriteria(e.target.value);
+                              }}
+                            type="text" id="default-search" class="mb-1 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Criterio" required/>
+                            <input 
+                            value={porcentage} onChange={(e) => {
+                                setPorcentage(e.target.value);
+                              }}
+                            type="number" id="default-search" class=" text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="%" required/>                               
                             <center>
 
-                            <button type="button" className="m-1 bg-green-500 hover:bg-green-700 text-white rounded-full w-10 h-10 flex items-center justify-center">
+                            <button onClick={addCriteria} type="button" className="m-1 bg-green-500 hover:bg-green-700 text-white rounded-full w-10 h-10 flex items-center justify-center">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-6 h-6">
                                     <path fillRule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clipRule="evenodd" />
                                 </svg>
