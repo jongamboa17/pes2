@@ -2,7 +2,10 @@
 import useObtenerGradosYGrupos from '@/components/hooks/gradosygrupos';
 import { useState, useEffect } from 'react'
 import Tabla_alumnos_calificaciones from '@/components/tablas/tabla_alumnos_calificaciones'
-export default function page () {
+export default function page (userId) {
+    
+    const userId2 = userId;
+    //console.log('USERRRR123:', userId2);
     const { gradosConGrupos, obtenerGradosYGrupos } = useObtenerGradosYGrupos();
     useEffect(() => {
         obtenerGradosYGrupos();
@@ -14,9 +17,11 @@ export default function page () {
     
     return (
       <div>
+        
         {gradosConGrupos.map((grado) => (
 
         <div className="collapse collapse-arrow bg-base-200 m-3 " key={grado.id}>
+            
         <input type="checkbox" id={`accordion-grado-${grado.id}`} className="peer hidden" />
             <label htmlFor={`accordion-grado-${grado.id}`} className="collapse-title text-2xl font-medium">
             {grado.nombre}{' '}Grado
@@ -31,7 +36,7 @@ export default function page () {
                     </label>
                     <div className="collapse-content peer-checked:block hidden"> 
                         
-                        <Tabla_alumnos_calificaciones/>
+                        <Tabla_alumnos_calificaciones userId={userId2}/>
                     </div>
                 </div>
                 ))}

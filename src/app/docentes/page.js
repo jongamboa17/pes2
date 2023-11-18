@@ -13,6 +13,7 @@ export default async function Home() {
         data: { user },
       } = await supabase.auth.getUser();
     
+    const userId = user.id;
     //restringir acceso a la página si no es administrador
     let profile = null;
     if(user){
@@ -43,13 +44,15 @@ export default async function Home() {
     if(!user){
         redirect('/sign-in');
     } 
-
+    
     return (
             <>
             
             <Navbar/>
             <div className='py-4 px-4 mr-4'>
-                <Accordion_calificaciones2/>
+                {/**enviar user.id en el componente hijo */}
+                <Accordion_calificaciones2 userId={userId} />
+                
             </div>
             
             </>

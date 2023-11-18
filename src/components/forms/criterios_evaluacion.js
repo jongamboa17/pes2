@@ -1,7 +1,9 @@
 
 import { useState, useEffect } from 'react';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
-export default function Criterios_evaluacion() {
+import { stringify } from 'postcss';
+
+export default function Criterios_evaluacion(userId) {
     const supabase = createClientComponentClient();
     const [criterios, setCriterios] = useState([]);
     const [criteriosSeleccionados, setCriteriosSeleccionados] = useState([]);
@@ -9,9 +11,16 @@ export default function Criterios_evaluacion() {
     const [forceUpdate, setForceUpdate] = useState(0);
     const [newCriteria, setNewCriteria] = useState('');
     const [porcentage, setPorcentage] = useState('');
+
+    
+    
+   //GET ID from user object
+   const userActual = userId.userId.userId.userId;
+   //console.log('USERID:', userId.userId.userId.userId);
     
     const fetchCriterios = async () => {
-            const { data } = await supabase.from('criterios_evaluacion').select('*');
+        
+            const { data } = await supabase.from('criterios_evaluacion').select('*').eq('user_id',userActual);
         
             if (data) {
               setCriterios(data);
@@ -25,7 +34,7 @@ export default function Criterios_evaluacion() {
             { 
                 name: newCriteria,
                 weight: porcentage,
-            
+                user_id: userActual,
             },
           ]);
     
@@ -65,7 +74,7 @@ export default function Criterios_evaluacion() {
                                     <a href="#" class="flex items-center px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
                                         <input id="link-checkbox" type="checkbox" value="" class="w-5 h-5 rounded-md mr-2"/>
                                         <span class="flex-grow text-sm sm:text-xs">{criterio.name}</span>
-                                        <input type="email" id="default-search" class=" w-11 h-10  ml-2 rounded-md" placeholder="%" />
+                                        <input type="email" id="default-search" value={criterio.weight} class=" w-11 h-10  ml-2 rounded-md" placeholder="%" />
                                         
                                     </a>
                                 </li>
