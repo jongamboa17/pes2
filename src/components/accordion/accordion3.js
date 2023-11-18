@@ -3,8 +3,9 @@ import Tabla_usuarios_grupos from '../tablas/tabla_usuarios_grupos'
 import Criterios_evaluacion from '../forms/criterios_evaluacion'
 import { useState, useEffect } from 'react'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import useObtenerGradosYGrupos from '@/components/hooks/gradosygrupos';
 export default function Accordion3({nuevosAlumnos}){
-    const [gradosConGrupos, setGradosConGrupos] = useState([]);
+    const { gradosConGrupos, obtenerGradosYGrupos } = useObtenerGradosYGrupos();
     const supabase = createClientComponentClient();
     //constante para guardar los cambios de nuevosAlumnos
     
@@ -15,49 +16,9 @@ export default function Accordion3({nuevosAlumnos}){
     
 
     useEffect(() => {
-        const obtenerGradosYGrupos = async () => {
-            // Aquí va la lógica para obtener los grados y grupos de la base de datos
-            let { data: gradosObtenidos, error: errorGrados } = await supabase
-                .from('grados')
-                .select('*');
-
-            let { data: gruposObtenidos, error: errorGrupos } = await supabase
-                .from('grupos')
-                .select('*');
-
-            if (!errorGrados && !errorGrupos) {
-                const gradosYGrupos = gradosObtenidos.map(grado => ({
-                    ...grado,
-                    grupos: gruposObtenidos.filter(grupo => grupo.grado_id === grado.id)
-                }));
-
-                
-                //setGradosConGrupos(gradosYGrupos);
-                setGradosConGrupos(reordenarGrados(gradosYGrupos));
-                //console.log('GRADOS Y GRUPOS',gradosYGrupos);
-                //obtener id de primer grado y el nombre de los grupos
-                //let idPrimerGrado = gradosYGrupos[0].id;
-                //let nombreGrupos = gradosYGrupos[0].grupos.map(grupo => grupo.nombre);
-                //console.log('ID PRIMER GRADO',idPrimerGrado);
-                //console.log('NOMBRE GRUPOS',nombreGrupos);
-            }
-        };
-
         obtenerGradosYGrupos();
+        
     }, []);
-
-    const reordenarGrados = (grados) => {
-        if (grados.length > 1) {
-            // Extrae el segundo elemento
-            const [primerGrado, segundoGrado, ...resto] = grados;
-    
-            // Reorganiza el arreglo colocando el segundo grado al principio
-            const gradosReorganizados = [segundoGrado, primerGrado, ...resto];
-    
-            return gradosReorganizados;
-        }
-        return grados;
-        };
     
     return(
       <>

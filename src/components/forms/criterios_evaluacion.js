@@ -1,11 +1,61 @@
-import 'flowbite';
+
+import { useState, useEffect } from 'react';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 export default function Criterios_evaluacion() {
-    function alerta(){
-        alert("hola");
+    const supabase = createClientComponentClient();
+    const [criterios, setCriterios] = useState([]);
+    const [criteriosSeleccionados, setCriteriosSeleccionados] = useState([]);
+    const [porcentajes, setPorcentajes] = useState([]);
+    
+    const fetchCriterios = async () => {
+        
+        try {
+            const { data, error } = await supabase
+                .from('criterios_evaluacion')
+                .select('*');
+            console.log('After Supabase call', data, error);
+    
+           
+            setCriterios(data);
+        
+
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
     }
+
+    useEffect(() => {
+        console.log('Criterios updated:', criterios);
+    }, [criterios]);
+    
+        
+        useEffect(() => {
+            fetchCriterios(); // Obtener criterios inicialmente
+            
+            // Establecer la suscripción en tiempo real
+            const subscription = supabase
+                .channel('table-db-changes')
+                .on('postgres_changes', {
+                    event: '*',
+                    schema: 'public',
+                    table: 'criterios_evaluacion'
+                }, payload => {
+                    console.log('Realtime update:', payload);
+                    fetchCriterios(); // Re-fetch criterios when a change occurs
+                    
+
+                })
+                .subscribe();
+    
+            // Función de limpieza para cancelar la suscripción
+            return () => {
+                
+                supabase.removeChannel(subscription)
+            };
+        }, []);
+    
     return (
         <>
-        
             <div class="relative p-4 bg-white rounded-lg shadow dark:bg-gray-800 sm:p-5 ">
                 <div class="flex justify-between dark:border-gray-600">
                     <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
@@ -21,80 +71,20 @@ export default function Criterios_evaluacion() {
                             <h3 className=" pl-4 pb-2 font-medium">Seleccione los criterios:</h3>
                             {/**Agregar campos */}
                             <ul class="h-60 py-2 overflow-y-auto text-gray-700 dark:text-gray-200" aria-labelledby="dropdownUsersButton">
-                                
-                            <li>
-                                <a href="#" class="flex items-center px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
-                                    <input id="link-checkbox" type="checkbox" value="" class="w-5 h-5 rounded-md mr-2"/>
-                                    <span class="flex-grow text-sm sm:text-xs">Proyecto
-
-                                    </span>
-                                    <input type="email" id="default-search" class=" w-11 h-10  ml-2 rounded-md" placeholder="%" />
+                                {criterios.map((criterio) => (
                                     
-                                </a>
-                               
-                                
-                            </li>
-                            <li>
-                                <a href="#" class="flex items-center px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
-                                    <input id="link-checkbox" type="checkbox" value="" class="w-5 h-5 rounded-md mr-2"/>
-                                    <span class="flex-grow text-sm">Exposicion
+                                <li key={criterio.id}>
+                                    <a href="#" class="flex items-center px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                                        <input id="link-checkbox" type="checkbox" value="" class="w-5 h-5 rounded-md mr-2"/>
+                                        <span class="flex-grow text-sm sm:text-xs">{criterio.name}</span>
+                                        <input type="email" id="default-search" class=" w-11 h-10  ml-2 rounded-md" placeholder="%" />
                                         
-                                    </span>
-                                    <input type="email" id="default-search" class=" w-11 h-10  ml-2 rounded-md" placeholder="%" />
-                                   
-                                </a>
-                                
-                            </li>
-                            <li>
-                                <a href="#" class="flex items-center px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
-                                    <input id="link-checkbox" type="checkbox" value="" class="w-5 h-5 rounded-md mr-2"/>
-                                    <span class="flex-grow">sd
-                                        
-                                    </span>
-                                    <input type="email" id="default-search" class=" w-11 h-10  ml-2 rounded-md" placeholder="%" />
-                                   
-                                </a>
-                                
-                            </li>
-                            <li>
-                                <a href="#" class="flex items-center px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
-                                    <input id="link-checkbox" type="checkbox" value="" class="w-5 h-5 rounded-md mr-2"/>
-                                    <span class="flex-grow">sd
-                                        
-                                    </span>
-                                    <input type="email" id="default-search" class=" w-11 h-10  ml-2 rounded-md" placeholder="%" />
-                                   
-                                </a>
-                                
-                            </li>
-                            <li>
-                                <a href="#" class="flex items-center px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
-                                    <input id="link-checkbox" type="checkbox" value="" class="w-5 h-5 rounded-md mr-2"/>
-                                    <span class="flex-grow">sd
-                                        
-                                    </span>
-                                    <input type="email" id="default-search" class=" w-11 h-10  ml-2 rounded-md" placeholder="%" />
-                                   
-                                </a>
-                                
-                            </li>
-                            <li>
-                                <a href="#" class="flex items-center px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
-                                    <input id="link-checkbox" type="checkbox" value="" class="w-5 h-5 rounded-md mr-2"/>
-                                    <span class="flex-grow">sd
-                                        
-                                    </span>
-                                    <input type="email" id="default-search" class=" w-11 h-10  ml-2 rounded-md" placeholder="%" />
-                                   
-                                </a>
-                                
-                            </li>
-                            
+                                    </a>
+                                </li>
+                                ))}
+
                             </ul>
-                            
                         </div>
-                        
-                    
                         
                 </div>
                 <div className="rounded-lg min-h-[80px] flex flex-col md:flex-row gap-2">

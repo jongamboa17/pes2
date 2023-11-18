@@ -2,8 +2,9 @@
 import Editar_calificaciones from '../forms/editar_calificaciones'
 import Criterios_evaluacion from '../forms/criterios_evaluacion'
 import { useState, useEffect } from 'react'
-export default function Tabla_alumnos_calificaciones() {    
-    
+
+export default function Tabla_alumnos_calificaciones() {   
+     
     return (
         <>
            <div class="flow-root">  

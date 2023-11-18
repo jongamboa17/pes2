@@ -1,50 +1,44 @@
 'use client';
-import 'flowbite'
-import 'flowbite-react'
+import useObtenerGradosYGrupos from '@/components/hooks/gradosygrupos';
+import { useState, useEffect } from 'react'
 import Tabla_alumnos_calificaciones from '@/components/tablas/tabla_alumnos_calificaciones'
 export default function page () {
-  
+    const { gradosConGrupos, obtenerGradosYGrupos } = useObtenerGradosYGrupos();
+    useEffect(() => {
+        obtenerGradosYGrupos();
+        console.log('gradosConGruposFROM ACCORDION CALIFICACIONES:', gradosConGrupos);
+    }, []);
+
+    
+   
+    
     return (
       <div>
-        <div className="collapse collapse-arrow bg-base-200 m-3 ">
-        <input type="checkbox" id="accordion-item-12" className="peer hidden" />
-            <label htmlFor="accordion-item-12" className="collapse-title text-2xl font-medium">
-            Primer Grado 
+        {gradosConGrupos.map((grado) => (
+
+        <div className="collapse collapse-arrow bg-base-200 m-3 " key={grado.id}>
+        <input type="checkbox" id={`accordion-grado-${grado.id}`} className="peer hidden" />
+            <label htmlFor={`accordion-grado-${grado.id}`} className="collapse-title text-2xl font-medium">
+            {grado.nombre}{' '}Grado
             </label>
             <div className="collapse-content peer-checked:block hidden"> 
                 {/** */}
-                <div className="collapse collapse-arrow bg-white mb-2">
-                    <input type="checkbox" id="accordion-item-1" className="peer hidden" />
-                    <label htmlFor="accordion-item-1" className="collapse-title text-xl font-medium">
-                    Primer Grado A
+                {grado.grupos.map((grupo) => (
+                <div className="collapse collapse-arrow bg-white mb-2" key={grupo.id}>
+                    <input type="checkbox" id={`accordion-grupo-${grupo.id}`} className="peer hidden" />
+                    <label htmlFor={`accordion-grupo-${grupo.id}`} className="collapse-title text-xl font-medium">
+                    Grupo{' '}{grupo.nombre}
                     </label>
                     <div className="collapse-content peer-checked:block hidden"> 
                         
                         <Tabla_alumnos_calificaciones/>
                     </div>
                 </div>
-                <div className="collapse collapse-arrow bg-white mb-2">
-                    <input type="checkbox" id="accordion-item-2" className="peer hidden" />
-                    <label htmlFor="accordion-item-2" className="collapse-title text-xl font-medium">
-                        Primer Grado B
-                    </label>
-                    <div className="collapse-content peer-checked:block hidden"> 
-                        <p>hello</p>
-                    </div>
-                </div>
-                <div className="collapse collapse-arrow bg-white mb-2">
-                    <input type="checkbox" id="accordion-item-3" className="peer hidden" />
-                    <label htmlFor="accordion-item-3" className="collapse-title text-xl font-medium">
-                        Primer Grado C
-                    </label>
-                    <div className="collapse-content peer-checked:block hidden"> 
-                        <p>hello</p>
-                    </div>
-                </div>
+                ))}
                 {/** */}
             </div>
         </div>
-            
+        ))}
 
       </div>
     );
