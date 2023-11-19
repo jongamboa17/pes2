@@ -15,25 +15,25 @@ export default function AdminParent() {
     //estado para manejar alumnos pendientes de grupo
     const [alumnosPendientes, setAlumnosPendientes] = useState([]);
     //estado para los alumnos que se va a asignar a un grupo y vienen del componente pendientes_grupo
-    const [alumnosAsignados, setAlumnosAsignados] = useState([]);
+    //const [alumnosAsignados, setAlumnosAsignados] = useState([]);
     //constante para enviar alumnosAsignados a accordion3
     const [alumnosAsignadosGrupos, setAlumnosAsignadosGrupos] = useState([]);
 
     const manejarDatosPendienteGrupo = (datos) => {
         //vaciar alumnosAsignados antes de agregar nuevos datos
-        setAlumnosAsignados([]);
-        //console.log('datos:', datos);
-        setAlumnosAsignados(datos);
+        //setAlumnosAsignados([]);
+        //console.log('datosDESDEADMIN:', datos);
+        //setAlumnosAsignados(datos);
         setAlumnosAsignadosGrupos(datos);
     }
 
     
 
     //useEffect  cuando cambia el estado de alumnosAsignados y dar un console.log
-    useEffect(() => {
+    /**useEffect(() => {
         console.log('alumnosAsignadosXXXXQQQ:', alumnosAsignados);
         console.log('alumnosAsignadosGrupos:', alumnosAsignadosGrupos);
-    }, [alumnosAsignados]);
+    }, [alumnosAsignados]);*/
     
 
     useEffect(() => {
