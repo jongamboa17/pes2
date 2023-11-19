@@ -20,11 +20,17 @@ export default function AdminParent() {
     const [alumnosAsignadosGrupos, setAlumnosAsignadosGrupos] = useState([]);
 
     const manejarDatosPendienteGrupo = (datos) => {
-        //vaciar alumnosAsignados antes de agregar nuevos datos
-        //setAlumnosAsignados([]);
+        //vaciar alumnosAsignados a grupos antes de agregar nuevos datos
+        //setAlumnosAsignadosGrupos([]);
         //console.log('datosDESDEADMIN:', datos);
         //setAlumnosAsignados(datos);
+        //set timer para que se ejecute despues de 1 segundo
+        setTimeout(() => {
         setAlumnosAsignadosGrupos(datos);
+        }, 3000);
+        //limpiar despues de asignar alumnos a grupos
+        //setAlumnosPendientes([]);
+        //vacia el estado alumnosPendientes
     }
 
     

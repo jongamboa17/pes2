@@ -91,9 +91,9 @@ const SignIn = () => {
         )}
       </Formik>
       {errorMsg && <div className="text-red-600">{errorMsg}</div>}
-      <Link href="/sign-up" className="link w-full">
+      {/** <Link href="/sign-up" className="link w-full">
         No tienes una cuenta? Registrate.
-      </Link> 
+      </Link>*/} 
     </div>
     </>
   );
