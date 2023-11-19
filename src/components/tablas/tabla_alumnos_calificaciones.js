@@ -1,15 +1,23 @@
-
+'use client';
 import Editar_calificaciones from '../forms/editar_calificaciones'
 import Criterios_evaluacion from '../forms/criterios_evaluacion'
 import { useState, useEffect } from 'react'
 
-export default  function Tabla_alumnos_calificaciones({ userId }) {   
+export default  function Tabla_alumnos_calificaciones({ userId, periodos, asignaturas }) {   
+    
     //const userId3 = userId;
     //console.log('USEr34:', userId3);
+    //console.log('asignaturas:', asignaturas);
     return (
         <>
            <div class="flow-root">  
                 <p class="float-left font-bold p-2">Tabla Alumnos
+                    <select className='select select-bordered w-50 max-w-xs m-2 ml-4' >
+                            <option disabled value="">Seleccione grupo</option>
+                            {periodos.map((periodo) => (
+                                <option key={periodo.id} value={periodo.id}>{periodo.name}</option>
+                                ))}
+                        </select>
                     <label htmlFor="my_modal_13" className="text-white bg-green-600 hover:bg-blue-800 
                                                             focus:ring-4 focus:outline-none focus:ring-blue-300  
                                                             font-medium rounded-lg text-sm px-3 py-2.5 ml-4 text-center 
@@ -145,7 +153,7 @@ export default  function Tabla_alumnos_calificaciones({ userId }) {
         <input type="checkbox" id="my_modal_13" className="modal-toggle" />
         <div className="modal">
             <div className="modal-box">
-                <Criterios_evaluacion  userId={ userId }></Criterios_evaluacion>
+                <Criterios_evaluacion  userId={ userId } asignaturas={asignaturas}></Criterios_evaluacion>
             </div>
             <label className="modal-backdrop" htmlFor="my_modal_13">Close</label>
         </div>
