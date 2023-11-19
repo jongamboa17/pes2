@@ -2,9 +2,9 @@
 import useObtenerGradosYGrupos from '@/components/hooks/gradosygrupos';
 import { useState, useEffect } from 'react'
 import Tabla_alumnos_calificaciones from '@/components/tablas/tabla_alumnos_calificaciones'
-export default function page (userId) {
+export default function page ({ userId }) {
     
-    const userId2 = userId;
+    //const userId2 = userId;
     //console.log('USERRRR123:', userId2);
     const { gradosConGrupos, obtenerGradosYGrupos } = useObtenerGradosYGrupos();
     useEffect(() => {
@@ -36,7 +36,7 @@ export default function page (userId) {
                     </label>
                     <div className="collapse-content peer-checked:block hidden"> 
                         
-                        <Tabla_alumnos_calificaciones userId={userId2}/>
+                        <Tabla_alumnos_calificaciones userId={ userId } />
                     </div>
                 </div>
                 ))}

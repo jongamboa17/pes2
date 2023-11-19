@@ -3,8 +3,8 @@ import Editar_calificaciones from '../forms/editar_calificaciones'
 import Criterios_evaluacion from '../forms/criterios_evaluacion'
 import { useState, useEffect } from 'react'
 
-export default  function Tabla_alumnos_calificaciones(userId) {   
-    const userId3 = userId;
+export default  function Tabla_alumnos_calificaciones({ userId }) {   
+    //const userId3 = userId;
     //console.log('USEr34:', userId3);
     return (
         <>
@@ -145,7 +145,7 @@ export default  function Tabla_alumnos_calificaciones(userId) {
         <input type="checkbox" id="my_modal_13" className="modal-toggle" />
         <div className="modal">
             <div className="modal-box">
-                <Criterios_evaluacion userId={userId3} ></Criterios_evaluacion>
+                <Criterios_evaluacion  userId={ userId }></Criterios_evaluacion>
             </div>
             <label className="modal-backdrop" htmlFor="my_modal_13">Close</label>
         </div>

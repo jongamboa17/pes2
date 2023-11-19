@@ -1,9 +1,8 @@
 
 import { useState, useEffect } from 'react';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
-import { stringify } from 'postcss';
 
-export default function Criterios_evaluacion(userId) {
+export default function Criterios_evaluacion({ userId }) {
     const supabase = createClientComponentClient();
     const [criterios, setCriterios] = useState([]);
     const [criteriosSeleccionados, setCriteriosSeleccionados] = useState([]);
@@ -11,22 +10,25 @@ export default function Criterios_evaluacion(userId) {
     const [forceUpdate, setForceUpdate] = useState(0);
     const [newCriteria, setNewCriteria] = useState('');
     const [porcentage, setPorcentage] = useState('');
-
     
     
-   //GET ID from user object
-   const userActual = userId.userId.userId.userId;
-   //console.log('USERID:', userId.userId.userId.userId);
+    //obtener usuario logueado
+    const userActual = userId;
+    console.log(userActual);
     
     const fetchCriterios = async () => {
         
-            const { data } = await supabase.from('criterios_evaluacion').select('*').eq('user_id',userActual);
+            const { data } = await supabase.from('criterios_evaluacion').select('*').eq('user_id', userActual);
         
             if (data) {
               setCriterios(data);
+              
             }
           
     }
+
+    
+
     const addCriteria = async () => {
         await supabase
           .from('criterios_evaluacion')
@@ -42,16 +44,22 @@ export default function Criterios_evaluacion(userId) {
         setNewCriteria('');
         setPorcentage('');
       }
-  
+      
+     
+
     useEffect(() => {
+
         fetchCriterios(); // Obtener criterios inicialmente
         
         
     }, []);
+    
         
-        console.log('Criterios before rendering:', criterios);
+        //console.log('Criterios before rendering:', criterios);
     return (
         <>
+        {/**renderizar el user id */}
+
             <div class="relative p-4 bg-white rounded-lg shadow dark:bg-gray-800 sm:p-5 ">
                 <div class="flex justify-between dark:border-gray-600">
                     <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
