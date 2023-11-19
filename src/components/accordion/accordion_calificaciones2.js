@@ -50,11 +50,10 @@ export default function page ({ userId }) {
     return (
       <div>
          {asignaturaFiltrada?
-             gradosConGrupos.map((grado) => (
 
+             gradosConGrupos.map((grado) => (
                 <div className="collapse collapse-arrow bg-base-200 m-3 " key={grado.id}>
-                    
-                <input type="checkbox" id={`accordion-grado-${grado.id}`} className="peer hidden" />
+                    <input type="checkbox" id={`accordion-grado-${grado.id}`} className="peer hidden" />
                     <label htmlFor={`accordion-grado-${grado.id}`} className="collapse-title text-2xl font-medium">
                     {grado.nombre}{' '}Grado
                     </label>
@@ -63,16 +62,15 @@ export default function page ({ userId }) {
                         {grado.grupos.map((grupo) => (
                         <div className="collapse collapse-arrow bg-white mb-2" key={grupo.id}>
                             <input type="checkbox" id={`accordion-grupo-${grupo.id}`} className="peer hidden" />
-                            <label htmlFor={`accordion-grupo-${grupo.id}`} className="collapse-title text-xl font-medium">
-                            Grupo{' '}{grupo.nombre}
-                            </label>
                             
-                                
-                           
+                            <label htmlFor={`accordion-grupo-${grupo.id}`} className="collapse-title text-xl font-medium">
+                                Grupo{' '}{grupo.nombre}
+                            </label>
+                    
                             <div className="collapse-content peer-checked:block hidden"> 
-                                
                                 <Tabla_alumnos_calificaciones userId={ userId } periodos={periodos} asignaturas={asignaturas}/>
                             </div>
+
                         </div>
                         ))}
                         {/** */}
