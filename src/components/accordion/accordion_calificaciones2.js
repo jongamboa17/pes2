@@ -68,7 +68,7 @@ export default function page ({ userId }) {
                             </label>
                     
                             <div className="collapse-content peer-checked:block hidden"> 
-                                <Tabla_alumnos_calificaciones userId={ userId } periodos={periodos} asignaturas={asignaturas}/>
+                                <Tabla_alumnos_calificaciones grupoId= {grupo.id} userId={ userId } periodos={periodos} asignaturas={asignaturas}/>
                             </div>
 
                         </div>

@@ -2,7 +2,9 @@
 import { useState, useEffect } from 'react';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { ToastContainer, toast } from 'react-toastify';
-export default function Criterios_evaluacion({ userId, asignaturas, modalId }) {
+export default function Criterios_evaluacion({ userId, asignaturas, modalId, grupoId }) {
+     console.log('GRUPOIDDD2',grupoId);
+
     const supabase = createClientComponentClient();
     const [criterios, setCriterios] = useState([]);
     //const [asignaturas, setAsignaturas] = useState([]);
@@ -17,52 +19,12 @@ export default function Criterios_evaluacion({ userId, asignaturas, modalId }) {
     
     const [showSuccessMessage, setShowSuccessMessage] = useState(false);
     const [successMessage, setSuccessMessage] = useState('');
-
-    
+ 
     const [notaMinima,setNotaMinima] = useState(65);
-    //filter asignaturas por docente_id
-    //const asignaturasDocente = asignaturas.filter(asignatura => asignatura.docente_id === userId);
-    //console.log('Asignaturas del docente:', asignaturasDocente);
-    //console.log('Asignaturas del docente:', asignaturas[0].id);
-
-
-
+    
     const cerrarModal = () => {
         document.getElementById(modalId).checked = false;
     };
-
-    //obteer criterios seleccionados por el usuario
-    /**const updateCriterioWeightsInDatabase = async () => {
-        const updates = selectedCriterios.map((id) => ({
-          id: id,
-          weight: criterioWeights[id],
-    }));
-
-    const { error } = await supabase.from('criterios_evaluacion').upsert(updates, { onConflict: ['id'] });
-        if (error) {
-            console.error('Error al actualizar los pesos de los criterios:', error);
-        } else {
-            console.log('Actualización exitosa');
-            
-            setSuccessMessage('Los criterios se actualizaron correctamente');
-            // Muestra el mensaje de éxito
-            setShowSuccessMessage(true);
-
-            // Cierra el mensaje después de un tiempo (por ejemplo, después de 3 segundos)
-            setTimeout(() => {
-            setShowSuccessMessage(false);
-            setSuccessMessage('');
-            cerrarModal(); // Cierra el modal
-            }, 1500);
-
-            
-            //limpiar los estados
-            setSelectedCriterios([]);
-            setCriterioWeights({});
-            // Actualizar la lista de criterios hasta que se agregue el nuevo
-            await fetchCriterios();
-        }
-    };*/
 
     const handleNotaMinimaChange = (e) => {
         setNotaMinima(e.target.value);
@@ -93,12 +55,12 @@ export default function Criterios_evaluacion({ userId, asignaturas, modalId }) {
             if (error) {
                 console.error('Error al actualizar los pesos de los criterios:', error);
             } else {
-                
+                //console.log('GRUPOIDDD',grupoId);
                 const updates2 = [
                     {
                         asignatura_id: asignaturas[0].id,
                         nota_minima: notaMinima,
-                        //grupo_id: ,
+                        grupo_id: grupoId,
                     },
                 ];
                 const { data, error3 } = await supabase
@@ -119,8 +81,7 @@ export default function Criterios_evaluacion({ userId, asignaturas, modalId }) {
                 const bulkCriterios = selectedCriterios.map((id) => ({
                     criterio_id: id,
                     asignatura_id: asignaturas[0].id,
-                    //grupo_id: grupo[0].id,
-
+                    grupo_id: grupoId,
                 }));
                 //hacer un registro en la tabla asignacion_criterios los campos son criterio_id, asignatura_id, nota_minima
                 const { error2 } = await supabase.from('asignacion_criterios').upsert(bulkCriterios, { onConflict: ['criterio_id'] });

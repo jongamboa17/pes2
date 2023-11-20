@@ -3,8 +3,8 @@ import Editar_calificaciones from '../forms/editar_calificaciones'
 import Criterios_evaluacion from '../forms/criterios_evaluacion'
 import { useState, useEffect } from 'react'
 
-export default  function Tabla_alumnos_calificaciones({ userId, periodos, asignaturas }) {   
-    
+export default  function Tabla_alumnos_calificaciones({ userId, periodos, asignaturas, grupoId }) {   
+    //console.log('GRUPOIDDD',grupoId);
     //const userId3 = userId;
     //console.log('USEr34:', userId3);
     //console.log('asignaturas:', asignaturas[0].id);
@@ -153,7 +153,7 @@ export default  function Tabla_alumnos_calificaciones({ userId, periodos, asigna
         <input type="checkbox" id="my_modal_13" className="modal-toggle" />
         <div className="modal">
             <div className="modal-box">
-                <Criterios_evaluacion modalId="my_modal_13" userId={ userId } asignaturas={asignaturas}></Criterios_evaluacion>
+                <Criterios_evaluacion modalId="my_modal_13" userId={ userId } grupoId={grupoId} asignaturas={asignaturas}></Criterios_evaluacion>
             </div>
             <label className="modal-backdrop"  htmlFor="my_modal_13">Close</label>
         </div>
