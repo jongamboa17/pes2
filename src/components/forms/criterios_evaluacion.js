@@ -76,6 +76,8 @@ export default function Criterios_evaluacion({ userId, asignaturas, modalId }) {
         setPorcentage(e.target.value);
     };
 
+    
+    
     //handle submitCriterio
     const handleSubmitAsignacionCriterios = async (e) => {
         e.preventDefault();
@@ -91,6 +93,26 @@ export default function Criterios_evaluacion({ userId, asignaturas, modalId }) {
             if (error) {
                 console.error('Error al actualizar los pesos de los criterios:', error);
             } else {
+                
+                const updates2 = [
+                    {
+                        asignatura_id: asignaturas[0].id,
+                        nota_minima: notaMinima,
+                        //grupo_id: ,
+                    },
+                ];
+                const { data, error3 } = await supabase
+                    .from('grupo_asignatura_info_adicional')
+                    .upsert( updates2,{ onConflict: ['asignatura_id'] } )
+                    .select();
+        
+                if (error3) {
+                    console.error('Error actualizando nota minima:', error3);
+                }
+                else{
+                    console.log('Nota minima actualizada correctamente');
+                }
+                
                 //enviar un bulk insert de todos los criterios seleccionados, 
                 //los campos son criterio_id, asignatura_id, nota_minima, grupo_id
 
@@ -323,7 +345,7 @@ export default function Criterios_evaluacion({ userId, asignaturas, modalId }) {
                                 Agregar
                             </button>  
                             
-                            {/**
+                           
                             <input 
                                 type="number" 
                                 id="default-search" 
@@ -333,7 +355,7 @@ export default function Criterios_evaluacion({ userId, asignaturas, modalId }) {
                                 value={notaMinima}
                                 onChange={handleNotaMinimaChange}
                             />
-                             */}
+                              {/***/}
                         </div> 
                     </center>
                 </div>
@@ -358,6 +380,7 @@ export default function Criterios_evaluacion({ userId, asignaturas, modalId }) {
                     
                     Eliminar criterios
                 </button>
+                
             </center>
         </>
     )
