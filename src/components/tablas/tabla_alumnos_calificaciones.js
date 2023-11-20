@@ -7,7 +7,7 @@ export default  function Tabla_alumnos_calificaciones({ userId, periodos, asigna
     
     //const userId3 = userId;
     //console.log('USEr34:', userId3);
-    //console.log('asignaturas:', asignaturas);
+    //console.log('asignaturas:', asignaturas[0].id);
     return (
         <>
            <div class="flow-root">  

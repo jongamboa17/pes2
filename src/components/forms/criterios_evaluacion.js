@@ -18,10 +18,13 @@ export default function Criterios_evaluacion({ userId, asignaturas, modalId }) {
     const [showSuccessMessage, setShowSuccessMessage] = useState(false);
     const [successMessage, setSuccessMessage] = useState('');
 
+    
+    const [notaMinima,setNotaMinima] = useState(65);
     //filter asignaturas por docente_id
     //const asignaturasDocente = asignaturas.filter(asignatura => asignatura.docente_id === userId);
     //console.log('Asignaturas del docente:', asignaturasDocente);
-    console.log('Asignaturas del docente:', asignaturas[0].name);
+    //console.log('Asignaturas del docente:', asignaturas[0].id);
+
 
 
     const cerrarModal = () => {
@@ -29,7 +32,7 @@ export default function Criterios_evaluacion({ userId, asignaturas, modalId }) {
     };
 
     //obteer criterios seleccionados por el usuario
-    const updateCriterioWeightsInDatabase = async () => {
+    /**const updateCriterioWeightsInDatabase = async () => {
         const updates = selectedCriterios.map((id) => ({
           id: id,
           weight: criterioWeights[id],
@@ -58,6 +61,115 @@ export default function Criterios_evaluacion({ userId, asignaturas, modalId }) {
             setCriterioWeights({});
             // Actualizar la lista de criterios hasta que se agregue el nuevo
             await fetchCriterios();
+        }
+    };*/
+
+    const handleNotaMinimaChange = (e) => {
+        setNotaMinima(e.target.value);
+    };
+
+    const handleNewCriteriaChange = (e) => {
+        setNewCriteria(e.target.value);
+    };
+
+    const handlePorcentageChange = (e) => {
+        setPorcentage(e.target.value);
+    };
+
+    //handle submitCriterio
+    const handleSubmitAsignacionCriterios = async (e) => {
+        e.preventDefault();
+        if (selectedCriterios.length > 0) {
+            // Actualizar los pesos de los criterios en la base de datos
+            const updates = selectedCriterios.map((id) => ({
+                id: id,
+                weight: criterioWeights[id],
+            }));
+
+            //primero actualizar los pesos de los criterios en la tabla criterios_evaluacion
+            const { error } = await supabase.from('criterios_evaluacion').upsert(updates, { onConflict: ['id'] });
+            if (error) {
+                console.error('Error al actualizar los pesos de los criterios:', error);
+            } else {
+                //enviar un bulk insert de todos los criterios seleccionados, 
+                //los campos son criterio_id, asignatura_id, nota_minima, grupo_id
+
+                const bulkCriterios = selectedCriterios.map((id) => ({
+                    criterio_id: id,
+                    asignatura_id: asignaturas[0].id,
+                    //grupo_id: grupo[0].id,
+
+                }));
+                //hacer un registro en la tabla asignacion_criterios los campos son criterio_id, asignatura_id, nota_minima
+                const { error2 } = await supabase.from('asignacion_criterios').upsert(bulkCriterios, { onConflict: ['criterio_id'] });
+                if (error2) {
+                    console.error('Error al insertar los criterios:', error2);
+                } else {
+                    console.log('Criterios insertados correctamente');
+                    // Actualizar la lista de criterios hasta que se agregue el nuevo
+                    await fetchCriterios();
+                    //limpiar los estados
+                    setSelectedCriterios([]);
+                    setCriterioWeights({});
+                    setSuccessMessage('Los criterios se asignaron correctamente');
+                    // Muestra el mensaje de éxito
+                    setShowSuccessMessage(true);
+                    // Cierra el mensaje después de un tiempo (por ejemplo, después de 3 segundos)
+                    setTimeout(() => {
+                    setShowSuccessMessage(false);
+                    setSuccessMessage('');
+                    cerrarModal(); // Cierra el modal
+                    }, 1500);
+                }
+            }
+
+
+        } else {
+            setSuccessMessage('Por favor, seleccione al menos un criterio');
+            // Muestra el mensaje de éxito
+            setShowSuccessMessage(true);
+            // Cierra el mensaje después de un tiempo (por ejemplo, después de 3 segundos)
+            setTimeout(() => {
+            setShowSuccessMessage(false);
+            setSuccessMessage('');
+            }, 4000);
+        }
+    };
+
+
+    const handleEliminarCriterios = async (e) => {
+        e.preventDefault();
+        if (selectedCriterios.length > 0) {
+            //eliminar los criterios seleccionados
+            const { error } = await supabase.from('criterios_evaluacion').delete().in('id', selectedCriterios);
+            if (error) {
+                console.error('Error al eliminar los criterios:', error);
+            } else {
+                console.log('Criterios eliminados correctamente');
+                // Actualizar la lista de criterios hasta que se agregue el nuevo
+                await fetchCriterios();
+                //limpiar los estados
+                setSelectedCriterios([]);
+                setCriterioWeights({});
+                setSuccessMessage('Los criterios se eliminaron correctamente');
+                // Muestra el mensaje de éxito
+                setShowSuccessMessage(true);
+                // Cierra el mensaje después de un tiempo (por ejemplo, después de 3 segundos)
+                setTimeout(() => {
+                setShowSuccessMessage(false);
+                setSuccessMessage('');
+                //cerrarModal(); 
+                }, 1500);
+            }   
+        } else {
+            setSuccessMessage('Por favor, seleccione al menos un criterio');
+            // Muestra el mensaje de éxito
+            setShowSuccessMessage(true);
+            // Cierra el mensaje después de un tiempo (por ejemplo, después de 3 segundos)
+            setTimeout(() => {
+            setShowSuccessMessage(false);
+            setSuccessMessage('');
+            }, 4000);
         }
     };
 
@@ -132,7 +244,7 @@ export default function Criterios_evaluacion({ userId, asignaturas, modalId }) {
                             <ul class="h-60 py-2 overflow-y-auto text-gray-700 dark:text-gray-200" aria-labelledby="dropdownUsersButton">
                                 {criterios.map((criterio) => (
                                     
-                                <li >
+                                <li key={criterio.id} >
                                     <a href="#" class="flex items-center px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
                                         <input 
                                             checked={selectedCriterios.includes(criterio.id)}
@@ -197,39 +309,55 @@ export default function Criterios_evaluacion({ userId, asignaturas, modalId }) {
                 <div className="rounded-lg min-h-[80px] flex flex-col md:flex-row gap-2">
                     <center>
                         <div className="py-1  gap-y-3 flex-grow">
+                            
                             <input 
-                            value={newCriteria} onChange={(e) => {
-                                setNewCriteria(e.target.value);
-                            }}
+                            value={newCriteria} onChange={handleNewCriteriaChange}
                             type="text" id="default-search" class="m-4 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Criterio" required/>
+                            
                             <input 
-                            value={porcentage} onChange={(e) => {
-                                setPorcentage(e.target.value);
-                            }}
+                            value={porcentage} onChange={handlePorcentageChange}
                             type="number" id="default-search" class=" text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="%" required/>                               
                             
 
                             <button onClick={addCriteria} type="button" className="m-4 p-4 bg-green-500 hover:bg-green-700 text-white rounded-md  h-10 flex items-center justify-center">
                                 Agregar
                             </button>  
-                            <input type="number" id="default-search" class=" text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Nota mínima aprob" required/>
+                            
+                            {/**
+                            <input 
+                                type="number" 
+                                id="default-search" 
+                                class=" text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
+                                placeholder="Nota mínima aprob" 
+                                required
+                                value={notaMinima}
+                                onChange={handleNotaMinimaChange}
+                            />
+                             */}
                         </div> 
                     </center>
                 </div>
             </div>
             
             <center>   
+            
             {showSuccessMessage && (
-                <div className="text-white bg-green-500 rounded-md m-2 "> {successMessage} </div>
+                <div className="text-white bg-green-500 rounded-md m-2 p-2"> {successMessage} </div>
             )} 
                 <button 
-                    onClick={updateCriterioWeightsInDatabase}
+                    onClick={handleSubmitAsignacionCriterios}
                     type="submit" 
                     className="m-4 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg text-sm px-5 py-2.5 transition-colors duration-300">
                     
                     Guardar Cambios
                 </button>
-                
+                <button 
+                    onClick={handleEliminarCriterios}
+                    type="submit" 
+                    className="m-4 bg-red-600 hover:bg-red-500 text-white font-medium rounded-lg text-sm px-5 py-2.5 transition-colors duration-300">
+                    
+                    Eliminar criterios
+                </button>
             </center>
         </>
     )
