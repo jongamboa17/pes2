@@ -153,9 +153,9 @@ export default  function Tabla_alumnos_calificaciones({ userId, periodos, asigna
         <input type="checkbox" id="my_modal_13" className="modal-toggle" />
         <div className="modal">
             <div className="modal-box">
-                <Criterios_evaluacion  userId={ userId } asignaturas={asignaturas}></Criterios_evaluacion>
+                <Criterios_evaluacion modalId="my_modal_13" userId={ userId } asignaturas={asignaturas}></Criterios_evaluacion>
             </div>
-            <label className="modal-backdrop" htmlFor="my_modal_13">Close</label>
+            <label className="modal-backdrop"  htmlFor="my_modal_13">Close</label>
         </div>
             
         </>
