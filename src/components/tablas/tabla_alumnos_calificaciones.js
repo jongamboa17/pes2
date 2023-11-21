@@ -2,12 +2,42 @@
 import Editar_calificaciones from '../forms/editar_calificaciones'
 import Criterios_evaluacion from '../forms/criterios_evaluacion'
 import { useState, useEffect } from 'react'
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 
 export default  function Tabla_alumnos_calificaciones({ userId, periodos, asignaturas, grupoId }) {   
+    const supabase = createClientComponentClient();
     //console.log('GRUPOIDDD',grupoId);
     //const userId3 = userId;
     //console.log('USEr34:', userId3);
     //console.log('asignaturas:', asignaturas[0].id);
+    const [criteriosAsignadosEnPadre, setCriteriosAsignadosEnPadre] = useState([]);    
+
+    //traer los criterios de evaluacion con con ids igual a criteriosAsignadosEnPadre
+    const [criteriosEvaluacion, setCriteriosEvaluacion] = useState([]);
+    const [criteriosEvaluacionFiltrados, setCriteriosEvaluacionFiltrados] = useState([]);
+    
+    //funcion para traer los criterios de evaluacion de la base de datos
+    const fetchCriteriosEvaluacion = async () => {
+        const { data } = await supabase.from('criterios_evaluacion').select('*');
+        if (data) {
+             console.log('Criterios de evaluacionDESDEFILTRADOS:', data);
+             //filrar los criterios de evaluacion que tengan id igual a criteriosAsignadosEnPadre
+            const criteriosFiltrados = data.filter(criterio => criteriosAsignadosEnPadre.includes(criterio.id));
+            setCriteriosEvaluacion(criteriosFiltrados);
+
+        }
+    }
+
+    useEffect(() => {
+        fetchCriteriosEvaluacion();
+    }, [criteriosAsignadosEnPadre]);
+
+  // Define una función para recibir los criterios asignados desde el componente hijo
+    const recibirCriteriosAsignados = (criterios) => {
+        setCriteriosAsignadosEnPadre(criterios);
+    };
+
+    console.log('criteriosAsignadosEnPadre:', criteriosAsignadosEnPadre);
     return (
         <>
            <div class="flow-root">  
@@ -31,7 +61,11 @@ export default  function Tabla_alumnos_calificaciones({ userId, periodos, asigna
                 </p> 
                 <p class="float-right p-2">
                     
-                    
+                {criteriosEvaluacion.map((criterio) => (
+            <div key={criterio.id}>
+                <p>{criterio.name}</p>
+            </div>
+        ))}
                     
                 </p>
             </div>
@@ -44,29 +78,16 @@ export default  function Tabla_alumnos_calificaciones({ userId, periodos, asigna
                             Nombre
                             </center>
                         </th>
-                        
-                        <th scope="col" class="invisible sm:visible py-3 ">
-                            <center>
-                            TC - 10 %
-                            </center>
-                            
-                        </th>
-                        <th scope="col" class="invisible sm:visible py-3 ">
-                            <center>    
-                            TC - 10 %
-                            </center>
-                            
-                        </th>
-                        <th scope="col" class="invisible sm:visible py-3 ">
-                            <center>    
-                            TC - 10 %
-                            </center>
-                        </th>
-                        <th scope="col" class="invisible sm:visible py-3 ">
-                            <center>    
-                            TC - 10 %
-                            </center>
-                        </th>
+
+
+                        {criteriosEvaluacion.map((criterio) => (
+                            <th scope="col" class="invisible sm:visible py-3 " key={criterio.id}>
+                                <center>
+                                {criterio.name} - {criterio.weight}{' '}{'%'}
+                                </center>
+                                
+                            </th>
+                        ))}
                         
                         <th scope="col" class=" py-3 ">
                             <center>    
@@ -88,30 +109,16 @@ export default  function Tabla_alumnos_calificaciones({ userId, periodos, asigna
                             Neil Sims
                             </center>    
                         </th>
+                        {criteriosEvaluacion.map((criterio) => (
+                            <td class=" py-4 invisible sm:visible" key={criterio.id}>
+                            <center>
+
+                            85
+                            </center>
+                        </td>
+                        ))}
+                       
                         
-                        <td class=" py-4 invisible sm:visible">
-                            <center>
-
-                            85
-                            </center>
-                        </td>
-                        <td class=" py-4 invisible sm:visible">
-                            <center>
-
-                            85
-                            </center>
-                        </td>
-                        <td class=" py-4 invisible sm:visible">
-                            <center>
-
-                            85
-                            </center>
-                        </td>
-                        <td class=" py-4 invisible sm:visible">
-                            <center>
-                            85
-                            </center>
-                        </td>
                         <th scope="col" class=" py-3">
                             <center>    
                                 <span className='font-bold bg-red-500 px-5 py-3 rounded-md text-white'>60</span>
@@ -153,7 +160,12 @@ export default  function Tabla_alumnos_calificaciones({ userId, periodos, asigna
         <input type="checkbox" id="my_modal_13" className="modal-toggle" />
         <div className="modal">
             <div className="modal-box">
-                <Criterios_evaluacion modalId="my_modal_13" userId={ userId } grupoId={grupoId} asignaturas={asignaturas}></Criterios_evaluacion>
+                <Criterios_evaluacion   recibirCriteriosAsignados={recibirCriteriosAsignados} 
+                                        modalId="my_modal_13" 
+                                        userId={ userId } 
+                                        grupoId={grupoId} 
+                                        asignaturas={asignaturas}
+                />
             </div>
             <label className="modal-backdrop"  htmlFor="my_modal_13">Close</label>
         </div>

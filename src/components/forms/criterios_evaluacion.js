@@ -1,8 +1,8 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, use } from 'react';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { ToastContainer, toast } from 'react-toastify';
-export default function Criterios_evaluacion({ userId, asignaturas, modalId, grupoId }) {
+export default function Criterios_evaluacion({ userId, asignaturas, modalId, grupoId, recibirCriteriosAsignados }) {
      console.log('GRUPOIDDD2',grupoId);
 
     const supabase = createClientComponentClient();
@@ -21,7 +21,16 @@ export default function Criterios_evaluacion({ userId, asignaturas, modalId, gru
     const [successMessage, setSuccessMessage] = useState('');
  
     const [notaMinima,setNotaMinima] = useState(65);
+
+    //estado para guardar los criterios asignados a la asignatura
+    const [criteriosAsignados, setCriteriosAsignados] = useState([]);
     
+    //obtener los criterios asignados a la asignatura para enviarlos al componente padre
+    const enviarCriteriosAsignados = () => {
+        console.log('criteriosAsignadosDESDE hijo:', criteriosAsignados);
+        recibirCriteriosAsignados(criteriosAsignados);
+      };
+
     const cerrarModal = () => {
         document.getElementById(modalId).checked = false;
     };
@@ -36,10 +45,28 @@ export default function Criterios_evaluacion({ userId, asignaturas, modalId, gru
 
     const handlePorcentageChange = (e) => {
         setPorcentage(e.target.value);
+        
     };
 
+    // obtener los criterios asignados a la asignatura
+    const fetchCriteriosAsignados = async () => {
+        const { data } = await supabase
+            .from('asignacion_criterios')
+            .select('criterio_id')
+            .eq('grupo_id', grupoId)
+            .eq('asignatura_id', asignaturas[0].id);
+
+        if (data) {
+            
+            const criteriosIds = data.map((item) => item.criterio_id);
+            setCriteriosAsignados(criteriosIds);
+
+        }   
+    };
+
+            //enviarCriteriosAsignados();
     
-    
+
     //handle submitCriterio
     const handleSubmitAsignacionCriterios = async (e) => {
         e.preventDefault();
@@ -91,6 +118,8 @@ export default function Criterios_evaluacion({ userId, asignaturas, modalId, gru
                     console.log('Criterios insertados correctamente');
                     // Actualizar la lista de criterios hasta que se agregue el nuevo
                     await fetchCriterios();
+                    // Actualizar la lista de criterios asignados
+                    await fetchCriteriosAsignados();
                     //limpiar los estados
                     setSelectedCriterios([]);
                     setCriterioWeights({});
@@ -195,9 +224,18 @@ export default function Criterios_evaluacion({ userId, asignaturas, modalId, gru
     useEffect(() => {
         
         fetchCriterios(); // Obtener criterios inicialmente
+     fetchCriteriosAsignados();
         
+ 
+
+   
         
     }, []);
+
+    useEffect(() => {
+        console.log('criteriosAsignados DESDE FETCH CRITERIOSASIGNADOS:', criteriosAsignados);
+        enviarCriteriosAsignados();
+}), [criteriosAsignados];
     
         
         //console.log('Criterios before rendering:', criterios);
@@ -229,6 +267,7 @@ export default function Criterios_evaluacion({ userId, asignaturas, modalId, gru
                                     
                                 <li key={criterio.id} >
                                     <a href="#" class="flex items-center px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                                        {/**  checked={selectedCriterios.includes(criterio.id)|| criteriosAsignados.includes(criterio.id)}   */}
                                         <input 
                                             checked={selectedCriterios.includes(criterio.id)}
                                             onChange={(e) => {
@@ -259,8 +298,16 @@ export default function Criterios_evaluacion({ userId, asignaturas, modalId, gru
                                             class="w-5 h-5 rounded-md mr-2"
                                         />
 
-                                        <span class="flex-grow text-sm sm:text-xs">{criterio.name}</span>
-
+                                        <span class="flex-grow text-sm sm:text-xs">{criterio.name}
+                                        {criteriosAsignados.includes(criterio.id) ? (
+                                            // comparar
+                                            '(Asignado)'
+                                           
+                                        ) : (
+                                            " "
+                                        )}
+                                        </span>
+                                        
                                         <input 
                                             type="number" 
                                             id="default-search" 
