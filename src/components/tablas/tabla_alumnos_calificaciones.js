@@ -28,6 +28,46 @@ export default  function Tabla_alumnos_calificaciones({ userId, periodos, asigna
         }
     }
 
+    //fetch para obtener calificaciones de los alumnos
+    const fetchCalificiones = async () => {
+        const { data, error } = await supabase.from('calificaciones').select(`
+            asignatura_id,
+            alumno_id,
+            periodo,
+            metadata: metadata-> criterios 
+        `);
+
+        if (error) {
+            console.log('error', error);
+        }
+        else {
+            console.log('dataCALIFICACIONES', data);
+            console.log('DATA2', data[0].metadata[0].criterioId);
+        }
+
+
+    };
+
+    const fetchCalificiones2 = async () => {
+       
+        const { data, error } = await supabase.from('calificaciones').select(`
+        asignatura_id, 
+        profiles ( id, name )
+        `)
+
+
+        if (error) {
+            console.log('error', error);
+        }
+        else {
+            console.log('dataCALIFICACIONES', data);
+            
+        }
+    };
+
+            
+        
+
     useEffect(() => {
         fetchCriteriosEvaluacion();
     }, [criteriosAsignadosEnPadre]);
@@ -62,10 +102,12 @@ export default  function Tabla_alumnos_calificaciones({ userId, periodos, asigna
                 <p class="float-right p-2">
                     
                 {criteriosEvaluacion.map((criterio) => (
-            <div key={criterio.id}>
-                <p>{criterio.name}</p>
-            </div>
-        ))}
+                    <div key={criterio.id}>
+                        <p>{criterio.name}</p>
+                    </div>
+                ))}
+                <button className='text-black' onClick={fetchCalificiones   }>BUTTON</button><br/>
+                <button className='text-black' onClick={fetchCalificiones2   }>BUTTON2</button>
                     
                 </p>
             </div>

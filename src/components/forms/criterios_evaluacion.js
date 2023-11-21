@@ -64,6 +64,8 @@ export default function Criterios_evaluacion({ userId, asignaturas, modalId, gru
         }   
     };
 
+    
+
             //enviarCriteriosAsignados();
     
 
@@ -388,6 +390,8 @@ export default function Criterios_evaluacion({ userId, asignaturas, modalId, gru
                     
                     Eliminar criterios
                 </button>
+
+                
                 
             </center>
         </>
