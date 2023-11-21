@@ -20,6 +20,14 @@ export default  function Tabla_alumnos_calificaciones({ userId, periodos, asigna
 
     const [estudiantes, setEstudiantes] = useState([]);
 
+    //guardar el periodo seleccionado en el estado
+    const [periodoSeleccionado, setPeriodoSeleccionado] = useState(null);
+    // Actualizar el estado cuando se seleccione un nuevo período
+    const handlePeriodoChange = (e) => {
+        setPeriodoSeleccionado(e.target.value);
+        console.log('PERIODO SELECCIONADO:', e.target.value);
+    };
+
     // Función para obtener los estudiantes del grupo
     const fetchEstudiantesDelGrupo = async () => {
         const { data, error } = await supabase
@@ -104,8 +112,8 @@ export default  function Tabla_alumnos_calificaciones({ userId, periodos, asigna
         <>
            <div class="flow-root">  
                 <p class="float-left font-bold p-2">Tabla Alumnos
-                    <select className='select select-bordered w-50 max-w-xs m-2 ml-4' >
-                            <option disabled value="">Seleccione grupo</option>
+                    <select className='select select-bordered w-50 max-w-xs m-2 ml-4'  onChange={handlePeriodoChange}>
+                            <option  value="">Seleccione grupo</option>
                             {periodos.map((periodo) => (
                                 <option key={periodo.id} value={periodo.id}>{periodo.name}</option>
                                 ))}
@@ -222,6 +230,8 @@ export default  function Tabla_alumnos_calificaciones({ userId, periodos, asigna
                                                     grupoId={grupoIdState}
                                                     criteriosEvaluacion={criteriosEvaluacion}
                                                     estudiante={`${estudiante.name} ${estudiante.lastname}`}
+                                                    periodoSeleccionado={periodoSeleccionado}
+                                                    asignaturas={asignaturas}
                                                     
 
                             />
