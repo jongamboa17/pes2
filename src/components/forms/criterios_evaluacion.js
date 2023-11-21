@@ -33,6 +33,7 @@ export default function Criterios_evaluacion({ userId, asignaturas, modalId, gru
 
     const cerrarModal = () => {
         document.getElementById(modalId).checked = false;
+        //
     };
 
     const handleNotaMinimaChange = (e) => {
@@ -113,7 +114,7 @@ export default function Criterios_evaluacion({ userId, asignaturas, modalId, gru
                     grupo_id: grupoId,
                 }));
                 //hacer un registro en la tabla asignacion_criterios los campos son criterio_id, asignatura_id, nota_minima
-                const { error2 } = await supabase.from('asignacion_criterios').upsert(bulkCriterios, { onConflict: ['criterio_id'] });
+                const { error2 } = await supabase.from('asignacion_criterios').upsert(bulkCriterios, { onConflict: ['id'] });
                 if (error2) {
                     console.error('Error al insertar los criterios:', error2);
                 } else {
@@ -251,7 +252,7 @@ export default function Criterios_evaluacion({ userId, asignaturas, modalId, gru
                     <div class="flex  items-center justify-center  dark:border-gray-600">
                         <h3 class="text-lg  font-semibold text-gray-900 dark:text-white">
                             Criterios De Evaluación
-                 
+                            {grupoId}
                         </h3>
                     </div>    
                 </center>

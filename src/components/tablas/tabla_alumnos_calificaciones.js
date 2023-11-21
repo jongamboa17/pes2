@@ -15,7 +15,9 @@ export default  function Tabla_alumnos_calificaciones({ userId, periodos, asigna
     //traer los criterios de evaluacion con con ids igual a criteriosAsignadosEnPadre
     const [criteriosEvaluacion, setCriteriosEvaluacion] = useState([]);
     const [criteriosEvaluacionFiltrados, setCriteriosEvaluacionFiltrados] = useState([]);
-    
+    //guardar el grupoId en el estado
+    const [grupoIdState, setGrupoIdState] = useState(grupoId);
+
     //funcion para traer los criterios de evaluacion de la base de datos
     const fetchCriteriosEvaluacion = async () => {
         const { data } = await supabase.from('criterios_evaluacion').select('*');
@@ -51,9 +53,8 @@ export default  function Tabla_alumnos_calificaciones({ userId, periodos, asigna
     const fetchCalificiones2 = async () => {
        
         const { data, error } = await supabase.from('calificaciones').select(`
-        asignatura_id, 
         profiles ( id, name )
-        `)
+        `);
 
 
         if (error) {
@@ -88,7 +89,7 @@ export default  function Tabla_alumnos_calificaciones({ userId, periodos, asigna
                                 <option key={periodo.id} value={periodo.id}>{periodo.name}</option>
                                 ))}
                         </select>
-                    <label htmlFor="my_modal_13" className="text-white bg-green-600 hover:bg-blue-800 
+                    <label htmlFor={`modal_Criterios_${grupoId}`} className="text-white bg-green-600 hover:bg-blue-800 
                                                             focus:ring-4 focus:outline-none focus:ring-blue-300  
                                                             font-medium rounded-lg text-sm px-3 py-2.5 ml-4 text-center 
                                                             inline-flex items-center  dark:bg-blue-600 dark:hover:bg-blue-700 
@@ -99,6 +100,7 @@ export default  function Tabla_alumnos_calificaciones({ userId, periodos, asigna
                     </label>
                     
                 </p> 
+                {grupoIdState}
                 <p class="float-right p-2">
                     
                 {criteriosEvaluacion.map((criterio) => (
@@ -168,7 +170,7 @@ export default  function Tabla_alumnos_calificaciones({ userId, periodos, asigna
                         </th>
                         <td class=" py-4">
                             <center>
-                                <label htmlFor="my_modal_30" className="text-white bg-green-600 hover:bg-blue-800 
+                                <label htmlFor={`modal_${grupoId}`} className="text-white bg-green-600 hover:bg-blue-800 
                                                         focus:ring-4 focus:outline-none focus:ring-blue-300  
                                                         font-medium rounded-lg text-sm px-3 py-2.5 text-center 
                                                         inline-flex items-center  dark:bg-blue-600 dark:hover:bg-blue-700 
@@ -190,26 +192,26 @@ export default  function Tabla_alumnos_calificaciones({ userId, periodos, asigna
         
 
         {/**Modal editar*/}
-        <input type="checkbox" id="my_modal_30" className="modal-toggle" />
+        <input type="checkbox" id={`modal_${grupoId}`} className="modal-toggle" />
         <div className="modal">
             <div className="modal-box">
                 <Editar_calificaciones></Editar_calificaciones>
             </div>
-            <label className="modal-backdrop" htmlFor="my_modal_30">Close</label>
+            <label className="modal-backdrop" htmlFor={`modal_${grupoId}`}>Close</label>
         </div>
         
         {/**Modal criterios de evaluación*/}
-        <input type="checkbox" id="my_modal_13" className="modal-toggle" />
+        <input type="checkbox" id={`modal_Criterios_${grupoId}`} className="modal-toggle" />
         <div className="modal">
             <div className="modal-box">
                 <Criterios_evaluacion   recibirCriteriosAsignados={recibirCriteriosAsignados} 
-                                        modalId="my_modal_13" 
+                                        modalId={`modal_Criterios_${grupoId}`}
                                         userId={ userId } 
-                                        grupoId={grupoId} 
+                                        grupoId={grupoIdState} 
                                         asignaturas={asignaturas}
                 />
             </div>
-            <label className="modal-backdrop"  htmlFor="my_modal_13">Close</label>
+            <label className="modal-backdrop"  htmlFor={`modal_Criterios_${grupoId}`}>Close</label>
         </div>
             
         </>
