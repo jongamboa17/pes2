@@ -28,6 +28,14 @@ export default  function Tabla_alumnos_calificaciones({ userId, periodos, asigna
         console.log('PERIODO SELECCIONADO:', e.target.value);
     };
 
+    useEffect(() => {
+        if (periodos.length > 0) {
+            const sortedPeriodos = periodos.sort((a, b) => new Date(b.initial_date) - new Date(a.initial_date));
+            const periodoMasReciente = sortedPeriodos[0];
+            setPeriodoSeleccionado(periodoMasReciente.id);
+        }
+    }, [periodos]);
+    
     // Función para obtener los estudiantes del grupo
     const fetchEstudiantesDelGrupo = async () => {
         const { data, error } = await supabase
@@ -112,8 +120,8 @@ export default  function Tabla_alumnos_calificaciones({ userId, periodos, asigna
         <>
            <div class="flow-root">  
                 <p class="float-left font-bold p-2">Tabla Alumnos
-                    <select className='select select-bordered w-50 max-w-xs m-2 ml-4'  onChange={handlePeriodoChange}>
-                            <option  value="">Seleccione grupo</option>
+                    <select className='select select-bordered w-50 max-w-xs m-2 ml-4'  onChange={handlePeriodoChange} value={periodoSeleccionado}>
+                            
                             {periodos.map((periodo) => (
                                 <option key={periodo.id} value={periodo.id}>{periodo.name}</option>
                                 ))}
@@ -230,7 +238,8 @@ export default  function Tabla_alumnos_calificaciones({ userId, periodos, asigna
                                                     grupoId={grupoIdState}
                                                     criteriosEvaluacion={criteriosEvaluacion}
                                                     estudiante={`${estudiante.name} ${estudiante.lastname}`}
-                                                    periodoSeleccionado={periodoSeleccionado}
+                                                    estudianteId={estudiante.id}
+                                                    
                                                     asignaturas={asignaturas}
                                                     
 
