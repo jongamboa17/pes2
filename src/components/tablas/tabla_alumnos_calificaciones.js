@@ -18,6 +18,27 @@ export default  function Tabla_alumnos_calificaciones({ userId, periodos, asigna
     //guardar el grupoId en el estado
     const [grupoIdState, setGrupoIdState] = useState(grupoId);
 
+    const [estudiantes, setEstudiantes] = useState([]);
+
+    // Función para obtener los estudiantes del grupo
+    const fetchEstudiantesDelGrupo = async () => {
+        const { data, error } = await supabase
+            .from('profiles') // Asumiendo que 'profiles' es tu tabla de estudiantes
+            .select('*')
+            .eq('Grupo', grupoId); // Asumiendo que 'grupo_id' es la columna que relaciona estudiantes con grupos
+
+        if (error) {
+            console.error('Error al obtener estudiantes', error);
+        } else {
+            setEstudiantes(data);
+        }
+    };
+
+     // Llamamos a fetchEstudiantesDelGrupo cada vez que cambie el grupoId
+     useEffect(() => {
+        fetchEstudiantesDelGrupo();
+    }, []);
+
     //funcion para traer los criterios de evaluacion de la base de datos
     const fetchCriteriosEvaluacion = async () => {
         const { data } = await supabase.from('criterios_evaluacion').select('*');
@@ -100,21 +121,18 @@ export default  function Tabla_alumnos_calificaciones({ userId, periodos, asigna
                     </label>
                     
                 </p> 
-                {grupoIdState}
+                
                 <p class="float-right p-2">
-                    
-                {criteriosEvaluacion.map((criterio) => (
-                    <div key={criterio.id}>
-                        <p>{criterio.name}</p>
-                    </div>
-                ))}
                 <button className='text-black' onClick={fetchCalificiones   }>BUTTON</button><br/>
                 <button className='text-black' onClick={fetchCalificiones2   }>BUTTON2</button>
-                    
+
+                
+                
                 </p>
             </div>
             <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                 <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                    
                     <tr>
                         
                         <th scope="col" class=" invisible sm:visible py-3">
@@ -147,10 +165,13 @@ export default  function Tabla_alumnos_calificaciones({ userId, periodos, asigna
                     </tr>
                 </thead>
                 <tbody>
-                    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                    {estudiantes.map((estudiante) => (
+                       
+                   
+                    <tr key={estudiante.id} class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                         <th scope="row" class="py-4">
                             <center>    
-                            Neil Sims
+                            {estudiante.name}
                             </center>    
                         </th>
                         {criteriosEvaluacion.map((criterio) => (
@@ -170,7 +191,7 @@ export default  function Tabla_alumnos_calificaciones({ userId, periodos, asigna
                         </th>
                         <td class=" py-4">
                             <center>
-                                <label htmlFor={`modal_${grupoId}`} className="text-white bg-green-600 hover:bg-blue-800 
+                                <label htmlFor={`modal_estudiante_${estudiante.id}`} className="text-white bg-green-600 hover:bg-blue-800 
                                                         focus:ring-4 focus:outline-none focus:ring-blue-300  
                                                         font-medium rounded-lg text-sm px-3 py-2.5 text-center 
                                                         inline-flex items-center  dark:bg-blue-600 dark:hover:bg-blue-700 
@@ -185,20 +206,31 @@ export default  function Tabla_alumnos_calificaciones({ userId, periodos, asigna
                         </td>
                         
                     </tr>
-                    
+                     ))}
                 </tbody>
             </table>
         
         
+            {estudiantes.map((estudiante) => (
+                <div key={estudiante.id}>
+                    {/**Modal editar*/}
+                    <input type="checkbox" id={`modal_estudiante_${estudiante.id}`} className="modal-toggle" />
+                    <div className="modal">
+                        <div className="modal-box">
+                            <Editar_calificaciones
+                                                    modalId={`modal_estudiante_${estudiante.id}`}
+                                                    grupoId={grupoIdState}
+                                                    criteriosEvaluacion={criteriosEvaluacion}
+                                                    estudiante={`${estudiante.name} ${estudiante.lastname}`}
+                                                    
 
-        {/**Modal editar*/}
-        <input type="checkbox" id={`modal_${grupoId}`} className="modal-toggle" />
-        <div className="modal">
-            <div className="modal-box">
-                <Editar_calificaciones></Editar_calificaciones>
-            </div>
-            <label className="modal-backdrop" htmlFor={`modal_${grupoId}`}>Close</label>
-        </div>
+                            />
+                        </div>
+                        <label className="modal-backdrop" htmlFor={`modal_estudiante_${estudiante.id}`}>Close</label>
+                    </div>
+                </div>
+            ))}
+        
         
         {/**Modal criterios de evaluación*/}
         <input type="checkbox" id={`modal_Criterios_${grupoId}`} className="modal-toggle" />
