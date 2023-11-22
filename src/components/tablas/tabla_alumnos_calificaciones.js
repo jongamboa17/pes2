@@ -28,7 +28,7 @@ export default  function Tabla_alumnos_calificaciones({ userId, periodos, asigna
         // Suponiendo que 'estudiante.id' y 'asignaturas[0].id' son válidos y existen
         const { data, error } = await supabase
             .from('calificaciones')
-            .select('*')
+            .select('*').eq('periodo', 2)//////////////////////////////////////CAMBIAR EL PERIODO
 
         if (error) {
             console.error('Error al obtener calificaciones', error);
@@ -60,6 +60,7 @@ export default  function Tabla_alumnos_calificaciones({ userId, periodos, asigna
     // Actualizar el estado cuando se seleccione un nuevo período
     const handlePeriodoChange = (e) => {
         setPeriodoSeleccionado(e.target.value);
+        fetchCalificaciones();
         console.log('PERIODO SELECCIONADO:', e.target.value);
     };
 
@@ -151,7 +152,7 @@ export default  function Tabla_alumnos_calificaciones({ userId, periodos, asigna
         setCriteriosAsignadosEnPadre(criterios);
     };
 
-    console.log('criteriosAsignadosEnPadre:', criteriosAsignadosEnPadre);
+    //console.log('criteriosAsignadosEnPadre:', criteriosAsignadosEnPadre);
     return (
         <>
            <div class="flow-root">  
@@ -220,9 +221,12 @@ export default  function Tabla_alumnos_calificaciones({ userId, periodos, asigna
                     </tr>
                 </thead>
                 <tbody>
-                    {estudiantes.map((estudiante) => (
-                       
-                   
+                    {estudiantes.map((estudiante) => {
+                    // Inicializa la suma de calificaciones para cada estudiante
+                    let sumaCalificaciones = 0;
+                    let contadorCalificaciones = 0;
+
+                    return (
                     <tr key={estudiante.id} class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                         <th scope="row" class="py-4">
                             <center>    
@@ -230,26 +234,46 @@ export default  function Tabla_alumnos_calificaciones({ userId, periodos, asigna
                             </center>    
                         </th>
                         {criteriosEvaluacion.map((criterio) => {
-                            // Busca la calificación correspondiente
                             const calificacionEncontrada = calificaciones.find(calificacion => 
                                 calificacion.alumno_id === estudiante.id && calificacion.criterio_id === criterio.id);
+
+                            // Suma la calificación encontrada
+                            if (calificacionEncontrada) {
+                                sumaCalificaciones += calificacionEncontrada.calificacion;
+                                contadorCalificaciones++;
+                            }
 
                             return (
                                 <td class="py-4 invisible sm:visible" key={criterio.id}>
                                     <center>
                                         {calificacionEncontrada ? calificacionEncontrada.calificacion : 'Sin calificar'}
-                                        
                                     </center>
                                 </td>
                             );
                         })}
                        
-                        
-                        <th scope="col" class=" py-3">
-                            <center>    
-                                <span className='font-bold bg-red-500 px-5 py-3 rounded-md text-white'>60</span>
+                       
+                       
+
+                       <th scope="col" class="py-3">
+                            <center> 
+                                <span 
+                                    className={
+                                        `font-bold px-5 py-3 rounded-md text-white ${
+                                            contadorCalificaciones > 0 && (sumaCalificaciones / contadorCalificaciones) > 65 
+                                            ? 'bg-green-500' 
+                                            : 'bg-red-500'
+                                        }`
+                                    }
+                                >
+                                    {contadorCalificaciones > 0 
+                                        ? (sumaCalificaciones / contadorCalificaciones)
+                                        : 'Sin calificar'
+                                    }
+                                </span>
                             </center>
                         </th>
+
                         <td class=" py-4">
                             <center>
                                 <label htmlFor={`modal_estudiante_${estudiante.id}`} className="text-white bg-green-600 hover:bg-blue-800 
@@ -267,7 +291,8 @@ export default  function Tabla_alumnos_calificaciones({ userId, periodos, asigna
                         </td>
                         
                     </tr>
-                     ))}
+                    );
+                    })}
                 </tbody>
             </table>
         
