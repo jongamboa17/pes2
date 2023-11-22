@@ -12,6 +12,7 @@ export default function Editar_calificaciones({grupoId, estudiante, estudianteId
     //console.log('ASIGNATURAS:',asignaturas[0].id);
 
     const [calificaciones, setCalificaciones] = useState({});
+    const [calificacionesFetch, setCalificacionesFetch] = useState({});
     const [periodoSeleccionado, setPeriodoSeleccionado] = useState(null);
     
     const fetchUltimoPeriodo = async () => {
@@ -54,7 +55,7 @@ export default function Editar_calificaciones({grupoId, estudiante, estudianteId
                 return;
             }else {
                 console.log('Calificaciones extosas:', data);
-                setCalificaciones(data);
+                setCalificacionesFetch(data);
                 
             }
 
@@ -73,7 +74,7 @@ export default function Editar_calificaciones({grupoId, estudiante, estudianteId
 
         useEffect(() => {
             if (periodoSeleccionado) {
-                fetchCalificaciones();
+                recargarCalificaciones();
             }
         }, [periodoSeleccionado]);
 
@@ -82,19 +83,20 @@ export default function Editar_calificaciones({grupoId, estudiante, estudianteId
         console.log('CalificacionesDESDE EDITAR:', calificaciones);
     }, [calificaciones]);
 
-    const handleCalificacionChange = (criterioId, value, peso) => {
-        const porcentaje = ((value / 100) * peso).toFixed(2);
+    const handleCalificacionChange = (criterioId, value) => {
+        
         setCalificaciones(prev => ({
             ...prev,
             [criterioId]: {
-                calificacion: value,
-                porcentaje
+                calificacion: value
             }
         }));
+
     };
     
     //enviar calificaciones a la base de datos
-    const enviarCalificaciones = async () => {
+    /*const enviarCalificaciones = async () => {
+        
         const calificacionesParaEnviar = Object.entries(calificaciones).map(([criterioId, { calificacion }]) => ({
             alumno_id: estudianteId,
             asignatura_id: asignaturas[0].id,
@@ -106,19 +108,74 @@ export default function Editar_calificaciones({grupoId, estudiante, estudianteId
         
         const { data, error } = await supabase
             .from('calificaciones')
-            .upsert(calificacionesParaEnviar, { onConflict: ['id'] });
+            .upsert(calificacionesParaEnviar, { onConflict: ['id']  });
 
         if (error) {
             console.error('Error al enviar calificaciones', error);
         } else {
             console.log('Calificaciones enviadas con éxito', data);
         }
-    };
+    };*/
 
     const handleSubmit = (e) => {
         e.preventDefault();
         enviarCalificaciones();
     };
+
+    const enviarCalificaciones = async () => {
+        const calificacionesParaEnviar = Object.entries(calificaciones).map(([criterioId, { calificacion }]) => {
+            // Buscar si existe una calificación previa para obtener su calificacion_id
+            const calificacionExistente = calificacionesFetch.find(c => c.criterio_id.toString() === criterioId);
+            const calificacionIdExistente = calificacionExistente ? calificacionExistente.calificacion_id : null;
+    
+            // Construir el objeto de calificación
+            const calificacionParaEnviar = {
+                alumno_id: estudianteId,
+                asignatura_id: asignaturas[0].id,
+                periodo: periodoSeleccionado,
+                criterio_id: criterioId,
+                calificacion: calificacion,
+                fecha: new Date().toISOString()
+            };
+    
+            // Si existe un calificacion_id, añadirlo al objeto
+            if (calificacionIdExistente != null) {
+                calificacionParaEnviar.calificacion_id = calificacionIdExistente;
+            }
+    
+            return calificacionParaEnviar;
+        });
+    
+        // Realizar la operación upsert
+        const { data, error } = await supabase
+            .from('calificaciones')
+            .upsert(calificacionesParaEnviar, { onConflict: 'calificacion_id' });
+    
+        if (error) {
+            console.error('Error al enviar calificaciones', error);
+        } else {
+            console.log('Calificaciones enviadas con éxito', data);
+            setTimeout(() => {
+                fetchCalificaciones();
+                setCalificaciones({}); // Limpiar el estado de calificaciones
+                cerrarModal();    
+                }, 1500);
+            
+        }
+    };
+    
+    const recargarCalificaciones = () => {
+        fetchCalificaciones();
+    };
+
+    const cerrarModal = () => {
+        document.getElementById(modalId).checked = false;
+        //
+    };
+    
+
+
+    
     return (
         <>
             <div class="relative p-4 bg-white rounded-lg shadow dark:bg-gray-800 sm:p-5">
@@ -133,7 +190,7 @@ export default function Editar_calificaciones({grupoId, estudiante, estudianteId
                             <center>
                                 <div>
                                     <h2 className="font-bold">{estudiante}</h2>
-                                    <h2>{JSON.stringify(calificaciones)} {typeof(periodoSeleccionado)}</h2>
+                                    
                                     
                                             
                                             
@@ -145,7 +202,7 @@ export default function Editar_calificaciones({grupoId, estudiante, estudianteId
                         
                         <div className="grid gap-4 mb-4 sm:grid-cols-2 py-5">
                             {criteriosEvaluacion.map((criterio, index) => {
-                                const calificacionCriterio = calificaciones[index]?.calificacion;
+                                const calificacionCriterio = calificacionesFetch[index]?.calificacion;
 
                                 return (
                                     <div key={criterio.id}>
@@ -155,15 +212,20 @@ export default function Editar_calificaciones({grupoId, estudiante, estudianteId
                                         <input
                                             type="number"
                                             id={`calificacion_${criterio.id}`}
-                                            value={calificacionCriterio || ''}
-                                            onChange={(e) => handleCalificacionChange(criterio.id, e.target.value, criterio.weight)}
+                                            
+                                            onChange={(e) => handleCalificacionChange(criterio.id, e.target.value)}
                                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                            placeholder=''
-                                            required
-                                        />
+                                            placeholder= {calificacionCriterio || ''}
+                                            
+                                            />
+                                            
+                                        
+                                                
                                     </div>
                                 );
                             })}
+
+                        
                         </div>
                         <button type="submit" class="text-white inline-flex items-center bg-lime-700 hover:bg-lime-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
                             Guardar

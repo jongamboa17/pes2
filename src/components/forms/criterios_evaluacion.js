@@ -276,7 +276,6 @@ export default function Criterios_evaluacion({ userId, asignaturas, modalId, gru
                                             onChange={(e) => {
                                             const id = criterio.id;
                                             const isChecked = e.target.checked;
-                                
                                             // Actualiza el array de IDs seleccionados
                                             setSelectedCriterios((prevSelected) => {
                                                 if (isChecked) {
