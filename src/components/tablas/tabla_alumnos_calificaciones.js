@@ -22,6 +22,41 @@ export default  function Tabla_alumnos_calificaciones({ userId, periodos, asigna
 
     //guardar el periodo seleccionado en el estado
     const [periodoSeleccionado, setPeriodoSeleccionado] = useState(null);
+    const [calificaciones, setCalificaciones] = useState([]);
+
+    const fetchCalificaciones = async () => {
+        // Suponiendo que 'estudiante.id' y 'asignaturas[0].id' son válidos y existen
+        const { data, error } = await supabase
+            .from('calificaciones')
+            .select('*')
+
+        if (error) {
+            console.error('Error al obtener calificaciones', error);
+            return;
+        }else {
+            //llamar la funcion callback para enviar las calificaciones a la tabla
+            //console.log('Calificaciones extosas:', data);
+            setCalificaciones(data);
+        }
+    };
+
+    //funcion para llmar fetchCalificaciones onCalificacionActualizada
+    function onCalificacionesActualizadas() {
+        fetchCalificaciones();
+    }
+
+
+    //callback para recibir los criterios asignados desde el componente hijo
+    function manejarCalificacionesActualizadas(calificaciones) {
+        // Lógica para manejar las calificaciones actualizadas
+        //console.log('CALIFICACIONES ACTUALIZADAS:', calificaciones);
+        //alert('CALIFICACIONES ACTUALIZADAS:', calificaciones);
+
+        //estado para guardar las calificaciones actualizadas
+        //setCalificaciones(calificaciones);
+    }
+    
+
     // Actualizar el estado cuando se seleccione un nuevo período
     const handlePeriodoChange = (e) => {
         setPeriodoSeleccionado(e.target.value);
@@ -53,6 +88,7 @@ export default  function Tabla_alumnos_calificaciones({ userId, periodos, asigna
      // Llamamos a fetchEstudiantesDelGrupo cada vez que cambie el grupoId
      useEffect(() => {
         fetchEstudiantesDelGrupo();
+        fetchCalificaciones();
     }, []);
 
     //funcion para traer los criterios de evaluacion de la base de datos
@@ -120,6 +156,7 @@ export default  function Tabla_alumnos_calificaciones({ userId, periodos, asigna
         <>
            <div class="flow-root">  
                 <p class="float-left font-bold p-2">Tabla Alumnos
+                
                     <select className='select select-bordered w-50 max-w-xs m-2 ml-4'  onChange={handlePeriodoChange} value={periodoSeleccionado}>
                             
                             {periodos.map((periodo) => (
@@ -139,8 +176,8 @@ export default  function Tabla_alumnos_calificaciones({ userId, periodos, asigna
                 </p> 
                 
                 <p class="float-right p-2">
-                <button className='text-black' onClick={fetchCalificiones   }>BUTTON</button><br/>
-                <button className='text-black' onClick={fetchCalificiones2   }>BUTTON2</button>
+                {/** <button className='text-black' onClick={fetchCalificiones   }>BUTTON</button><br/>
+                <button className='text-black' onClick={fetchCalificiones2   }>BUTTON2</button>*/}
 
                 
                 
@@ -160,6 +197,8 @@ export default  function Tabla_alumnos_calificaciones({ userId, periodos, asigna
 
                         {criteriosEvaluacion.map((criterio) => (
                             <th scope="col" class="invisible sm:visible py-3 " key={criterio.id}>
+                                
+                                
                                 <center>
                                 {criterio.name} - {criterio.weight}{' '}{'%'}
                                 </center>
@@ -190,14 +229,20 @@ export default  function Tabla_alumnos_calificaciones({ userId, periodos, asigna
                             {estudiante.name}
                             </center>    
                         </th>
-                        {criteriosEvaluacion.map((criterio) => (
-                            <td class=" py-4 invisible sm:visible" key={criterio.id}>
-                            <center>
+                        {criteriosEvaluacion.map((criterio) => {
+                            // Busca la calificación correspondiente
+                            const calificacionEncontrada = calificaciones.find(calificacion => 
+                                calificacion.alumno_id === estudiante.id && calificacion.criterio_id === criterio.id);
 
-                            85
-                            </center>
-                        </td>
-                        ))}
+                            return (
+                                <td class="py-4 invisible sm:visible" key={criterio.id}>
+                                    <center>
+                                        {calificacionEncontrada ? calificacionEncontrada.calificacion : 'Sin calificar'}
+                                        
+                                    </center>
+                                </td>
+                            );
+                        })}
                        
                         
                         <th scope="col" class=" py-3">
@@ -239,7 +284,7 @@ export default  function Tabla_alumnos_calificaciones({ userId, periodos, asigna
                                                     criteriosEvaluacion={criteriosEvaluacion}
                                                     estudiante={`${estudiante.name} ${estudiante.lastname}`}
                                                     estudianteId={estudiante.id}
-                                                    
+                                                    onCalificacionesActualizadas={onCalificacionesActualizadas}
                                                     asignaturas={asignaturas}
                                                     
 
