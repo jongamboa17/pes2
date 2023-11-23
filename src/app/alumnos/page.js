@@ -47,10 +47,8 @@ export default async function Home() {
   return (
     <>
       <Navbar></Navbar>
-      <div className='py-5 px-2 grid grid-cols-1 border  gap-x-2 gap-y-3'>
-        <Accordion_calificaciones_alumno></Accordion_calificaciones_alumno>
-        
-        
+      <div className='py-4 px-4 mr-4'>
+        <Accordion_calificaciones_alumno userId={user ? user.id : null}/>
       </div>
     </>
   )
