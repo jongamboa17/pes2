@@ -24,8 +24,22 @@ export default  function Tabla_alumnos_calificaciones({ userId, periodos, asigna
     const [periodoSeleccionado, setPeriodoSeleccionado] = useState(null);
     const [calificaciones, setCalificaciones] = useState([]);
 
+    useEffect(() => {
+        if (periodos.length > 0) {
+            // Ordena los períodos de más reciente a más antiguo
+            const sortedPeriodos = periodos.sort((a, b) => new Date(b.initial_date) - new Date(a.initial_date));
+            // Toma el período más reciente
+            const periodoMasReciente = sortedPeriodos[0];
+            // Establece el período más reciente como el período seleccionado
+            setPeriodoSeleccionado(periodoMasReciente.id);
+            // Luego realiza la carga inicial de las calificaciones para este período
+            fetchCalificaciones(periodoMasReciente.id);
+        }
+    }, [periodos]);
+    
     const fetchCalificaciones = async (periodoId) => {
-        if (!periodoSeleccionado) {
+        const periodoParaConsulta = periodoId || periodoSeleccionado;
+        if (!periodoParaConsulta) {
             console.log("No hay período seleccionado");
             return;
         }
@@ -34,7 +48,7 @@ export default  function Tabla_alumnos_calificaciones({ userId, periodos, asigna
         // Suponiendo que 'estudiante.id' y 'asignaturas[0].id' son válidos y existen
         const { data, error } = await supabase
             .from('calificaciones')
-            .select('*').eq('periodo',periodoId || periodoSeleccionado)//////////////////////////////////////CAMBIAR EL PERIODO
+            .select('*').eq('periodo',periodoParaConsulta)//////////////////////////////////////CAMBIAR EL PERIODO
 
         if (error) {
             console.error('Error al obtener calificaciones', error);
