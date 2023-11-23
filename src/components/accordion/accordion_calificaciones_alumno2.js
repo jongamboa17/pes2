@@ -14,12 +14,15 @@ const CalificacionesEstudiante = ({ userId }) => {
     useEffect(() => {
         const fetchInitialData = async () => {
             // Obtener periodos
-            let { data: periodosData, error: periodosError } = await supabase.from('periodos').select('*');
+            let { data: periodosData, error: periodosError } = await supabase.from('periodos').select('*').order('created_at', { ascending: false });
             if (periodosError) {
                 console.error('Error al obtener periodos', periodosError);
             } else {
-                setPeriodos(periodosData);
-                setPeriodoSeleccionado(periodosData[0]?.id);
+                
+                if (periodosData && periodosData.length > 0) {
+                    setPeriodos(periodosData);
+                    setPeriodoSeleccionado(periodosData[0].id);
+                }
             }
 
             // Obtener asignaturas
@@ -33,6 +36,19 @@ const CalificacionesEstudiante = ({ userId }) => {
                     return map;
                 }, {});
                 setAsignaturas(asignaturasMap);
+            }
+
+            // Obtener criterios
+            let { data: criteriosData, error: criteriosError } = await supabase.from('criterios_evaluacion').select('*');
+            if (criteriosError) {
+                console.error('Error al obtener criterios', criteriosError);
+            } else {
+                // Transformar a un objeto para facilitar la búsqueda por ID
+                const criteriosMap = criteriosData.reduce((map, criterio) => {
+                    map[criterio.id] = criterio.name; // Asumiendo que 'name' es el campo con el nombre del criterio
+                    return map;
+                }, {});
+                setCriterios(criteriosMap);
             }
         };
 
@@ -92,7 +108,7 @@ const CalificacionesEstudiante = ({ userId }) => {
                         {calificaciones.map(({ calificacion_id, asignatura_id, criterio_id, calificacion }) => (
                             <tr key={calificacion_id}>
                                 <td className="text-left py-3 px-4">{asignaturas[asignatura_id]}</td>
-                                <td className="text-left py-3 px-4">{criterio_id}</td>
+                                <td className="text-left py-3 px-4">{criterios[criterio_id]}</td>
                                 <td className="text-left py-3 px-4">{calificacion}</td>
                             </tr>
                         ))}
