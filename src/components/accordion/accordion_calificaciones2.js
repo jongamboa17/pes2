@@ -21,12 +21,12 @@ export default function page ({ userId }) {
     }
 
     const fetchAsignaturas = async () => {
-        const { data } = await supabase.from('asignaturas').select('*');
+        const { data } = await supabase.from('asignaturas').select('*').eq('docente_id', userId);
         if (data) {
             //console.log('Asignaturas:', data);
             // para guardar el registro en donde docente_id = userId
             const asignaturasDocente = data.filter(asignatura => asignatura.docente_id === userId);
-            setAsignaturaFiltrada(asignaturasDocente[0]);
+            setAsignaturaFiltrada(data[0]);
 
             setAsignaturas(data);
         }else {
