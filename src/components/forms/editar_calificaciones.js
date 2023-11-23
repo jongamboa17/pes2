@@ -12,7 +12,7 @@ export default function Editar_calificaciones({grupoId,periodoSeleccionado2, est
     //console.log('ASIGNATURAS:',asignaturas[0].id);
 
     const [calificaciones, setCalificaciones] = useState({});
-    const [calificacionesFetch, setCalificacionesFetch] = useState({});
+    const [calificacionesFetch, setCalificacionesFetch] = useState([]);
     const [periodoSeleccionado, setPeriodoSeleccionado] = useState(null);
     
     const fetchUltimoPeriodo = async () => {
@@ -56,7 +56,7 @@ export default function Editar_calificaciones({grupoId,periodoSeleccionado2, est
             }else {
                 //llamar la funcion callback para enviar las calificaciones a la tabla
                 console.log('Calificaciones extosas:', data);
-                setCalificacionesFetch(data);
+                setCalificacionesFetch(data || []);
                 
                 
             }
@@ -210,8 +210,9 @@ export default function Editar_calificaciones({grupoId,periodoSeleccionado2, est
                             
                             {criteriosEvaluacion.map((criterio, index) => {
                                 //const calificacionCriterio = calificacionesFetch[index]?.calificacion;
-                                const calificacionEncontrada = calificacionesFetch.find(calificacion => 
-                                    calificacion.criterio_id === criterio.id);
+                                const calificacionEncontrada = Array.isArray(calificacionesFetch) ? 
+                                    calificacionesFetch.find(calificacion => calificacion.criterio_id === criterio.id) : null;
+
                                 return (
                                     <div key={criterio.id}>
                                         
