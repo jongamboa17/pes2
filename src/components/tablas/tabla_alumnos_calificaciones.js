@@ -24,11 +24,17 @@ export default  function Tabla_alumnos_calificaciones({ userId, periodos, asigna
     const [periodoSeleccionado, setPeriodoSeleccionado] = useState(null);
     const [calificaciones, setCalificaciones] = useState([]);
 
-    const fetchCalificaciones = async () => {
+    const fetchCalificaciones = async (periodoId) => {
+        if (!periodoSeleccionado) {
+            console.log("No hay período seleccionado");
+            return;
+        }
+
+
         // Suponiendo que 'estudiante.id' y 'asignaturas[0].id' son válidos y existen
         const { data, error } = await supabase
             .from('calificaciones')
-            .select('*').eq('periodo', 2)//////////////////////////////////////CAMBIAR EL PERIODO
+            .select('*').eq('periodo',periodoId || periodoSeleccionado)//////////////////////////////////////CAMBIAR EL PERIODO
 
         if (error) {
             console.error('Error al obtener calificaciones', error);
@@ -59,9 +65,9 @@ export default  function Tabla_alumnos_calificaciones({ userId, periodos, asigna
 
     // Actualizar el estado cuando se seleccione un nuevo período
     const handlePeriodoChange = (e) => {
-        setPeriodoSeleccionado(e.target.value);
-        fetchCalificaciones();
-        console.log('PERIODO SELECCIONADO:', e.target.value);
+        const nuevoPeriodoSeleccionado = e.target.value;
+    setPeriodoSeleccionado(nuevoPeriodoSeleccionado);
+    fetchCalificaciones(nuevoPeriodoSeleccionado);
     };
 
     useEffect(() => {
@@ -69,8 +75,10 @@ export default  function Tabla_alumnos_calificaciones({ userId, periodos, asigna
             const sortedPeriodos = periodos.sort((a, b) => new Date(b.initial_date) - new Date(a.initial_date));
             const periodoMasReciente = sortedPeriodos[0];
             setPeriodoSeleccionado(periodoMasReciente.id);
+            fetchCalificaciones(); // Asegúrate de llamar a fetchCalificaciones aquí también
         }
     }, [periodos]);
+    
     
     // Función para obtener los estudiantes del grupo
     const fetchEstudiantesDelGrupo = async () => {
@@ -94,7 +102,7 @@ export default  function Tabla_alumnos_calificaciones({ userId, periodos, asigna
 
     //funcion para traer los criterios de evaluacion de la base de datos
     const fetchCriteriosEvaluacion = async () => {
-        const { data } = await supabase.from('criterios_evaluacion').select('*');
+        const { data } = await supabase.from('criterios_evaluacion').select('*').eq('user_id', userId);
         if (data) {
              console.log('Criterios de evaluacionDESDEFILTRADOS:', data);
              //filrar los criterios de evaluacion que tengan id igual a criteriosAsignadosEnPadre
@@ -161,7 +169,7 @@ export default  function Tabla_alumnos_calificaciones({ userId, periodos, asigna
                     <select className='select select-bordered w-50 max-w-xs m-2 ml-4'  onChange={handlePeriodoChange} value={periodoSeleccionado}>
                             
                             {periodos.map((periodo) => (
-                                <option key={periodo.id} value={periodo.id}>{periodo.name}</option>
+                                <option key={periodo.id} value={periodo.id}   >{periodo.name}</option>
                                 ))}
                         </select>
                     <label htmlFor={`modal_Criterios_${grupoId}`} className="text-white bg-green-600 hover:bg-blue-800 
@@ -311,6 +319,7 @@ export default  function Tabla_alumnos_calificaciones({ userId, periodos, asigna
                                                     estudianteId={estudiante.id}
                                                     onCalificacionesActualizadas={onCalificacionesActualizadas}
                                                     asignaturas={asignaturas}
+                                                    periodoSeleccionado2={periodoSeleccionado}
                                                     
 
                             />

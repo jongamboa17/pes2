@@ -2,7 +2,7 @@ import { stringify } from "postcss";
 import { useState } from "react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useEffect } from "react";
-export default function Editar_calificaciones({grupoId, estudiante, estudianteId, onCalificacionesActualizadas,criteriosEvaluacion, modalId, asignaturas}){
+export default function Editar_calificaciones({grupoId,periodoSeleccionado2, estudiante, estudianteId, onCalificacionesActualizadas,criteriosEvaluacion, modalId, asignaturas}){
     const supabase = createClientComponentClient();
     //console.log('GRUPOID:',grupoId);
     //console.log('ESTUDIANTE:',estudiante);
@@ -48,7 +48,7 @@ export default function Editar_calificaciones({grupoId, estudiante, estudianteId
                 .select('*')
                 .eq('alumno_id', estudianteId)
                 .eq('asignatura_id', asignaturas[0].id)
-                .eq('periodo', periodoSeleccionado);
+                .eq('periodo', periodoSeleccionado2);
 
             if (error) {
                 console.error('Error al obtener calificaciones', error);
@@ -75,10 +75,10 @@ export default function Editar_calificaciones({grupoId, estudiante, estudianteId
         
 
         useEffect(() => {
-            if (periodoSeleccionado) {
+            if (periodoSeleccionado2) {
                 recargarCalificaciones();
             }
-        }, [periodoSeleccionado]);
+        }, [periodoSeleccionado2]);
 
 
     useEffect(() => {
@@ -134,13 +134,13 @@ export default function Editar_calificaciones({grupoId, estudiante, estudianteId
             const calificacionParaEnviar = {
                 alumno_id: estudianteId,
                 asignatura_id: asignaturas[0].id,
-                periodo: periodoSeleccionado,
+                periodo: periodoSeleccionado2,
                 criterio_id: criterioId,
                 calificacion: calificacion,
                 fecha: new Date().toISOString()
             };
     
-            // Si existe un calificacion_id, añadirlo al objeto
+            // Si existe un calificacion_id, añadirlo al objetoxw
             if (calificacionIdExistente != null) {
                 calificacionParaEnviar.calificacion_id = calificacionIdExistente;
             }
@@ -185,7 +185,7 @@ export default function Editar_calificaciones({grupoId, estudiante, estudianteId
             <div class="relative p-4 bg-white rounded-lg shadow dark:bg-gray-800 sm:p-5">
                     <div class="flex justify-between items-center pb-4 mb-4 rounded-t border-b sm:mb-5 dark:border-gray-600">
                         <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-                            Editar Calificaciones
+                            Editar Calificaciones - Periodo: {periodoSeleccionado2}
                             
                         </h3>
                     </div>
@@ -221,7 +221,7 @@ export default function Editar_calificaciones({grupoId, estudiante, estudianteId
                                         <input
                                             type="number"
                                             id={criterio.id}
-                                            
+                                            value={calificaciones[criterio.id]?.calificacion || ''}
                                             onChange={(e) => handleCalificacionChange(criterio.id, e.target.value)}
                                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                             placeholder= "Calificar: 0-100"

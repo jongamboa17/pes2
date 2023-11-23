@@ -164,6 +164,9 @@ export default function Criterios_evaluacion({ userId, asignaturas, modalId, gru
                 // Actualizar la lista de criterios hasta que se agregue el nuevo
                 await fetchCriterios();
                 //limpiar los estados
+
+                // Actualizar la lista de criterios asignados
+                await fetchCriteriosAsignados();
                 setSelectedCriterios([]);
                 setCriterioWeights({});
                 setSuccessMessage('Los criterios se eliminaron correctamente');
@@ -225,14 +228,8 @@ export default function Criterios_evaluacion({ userId, asignaturas, modalId, gru
      
 
     useEffect(() => {
-        
         fetchCriterios(); // Obtener criterios inicialmente
      fetchCriteriosAsignados();
-        
- 
-
-   
-        
     }, []);
 
     useEffect(() => {
@@ -252,7 +249,7 @@ export default function Criterios_evaluacion({ userId, asignaturas, modalId, gru
                     <div class="flex  items-center justify-center  dark:border-gray-600">
                         <h3 class="text-lg  font-semibold text-gray-900 dark:text-white">
                             Criterios De Evaluación
-                            {grupoId}
+                            
                         </h3>
                     </div>    
                 </center>
