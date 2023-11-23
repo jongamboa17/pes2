@@ -24,7 +24,7 @@ export default  function Tabla_alumnos_calificaciones({ userId, periodos, asigna
     const [periodoSeleccionado, setPeriodoSeleccionado] = useState(null);
     const [calificaciones, setCalificaciones] = useState([]);
 
-    useEffect(() => {
+    /*useEffect(() => {
         if (periodos.length > 0) {
             // Ordena los períodos de más reciente a más antiguo
             const sortedPeriodos = periodos.sort((a, b) => new Date(b.initial_date) - new Date(a.initial_date));
@@ -35,7 +35,20 @@ export default  function Tabla_alumnos_calificaciones({ userId, periodos, asigna
             // Luego realiza la carga inicial de las calificaciones para este período
             fetchCalificaciones(periodoMasReciente.id);
         }
+    }, [periodos]);*/
+
+    const periodosOrdenados = [...periodos].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+
+    useEffect(() => {
+        if (periodosOrdenados.length > 0) {
+            // Establece el período más reciente como el período seleccionado
+            setPeriodoSeleccionado(periodosOrdenados[0].id);
+            // Luego realiza la carga inicial de las calificaciones para este período
+            fetchCalificaciones(periodosOrdenados[0].id);
+        }
     }, [periodos]);
+
+    
     
     const fetchCalificaciones = async (periodoId) => {
         const periodoParaConsulta = periodoId || periodoSeleccionado;
@@ -84,15 +97,7 @@ export default  function Tabla_alumnos_calificaciones({ userId, periodos, asigna
     fetchCalificaciones(nuevoPeriodoSeleccionado);
     };
 
-    useEffect(() => {
-        if (periodos.length > 0) {
-            const sortedPeriodos = periodos.sort((a, b) => new Date(b.initial_date) - new Date(a.initial_date));
-            const periodoMasReciente = sortedPeriodos[0];
-            setPeriodoSeleccionado(periodoMasReciente.id);
-            fetchCalificaciones(); // Asegúrate de llamar a fetchCalificaciones aquí también
-        }
-    }, [periodos]);
-    
+ 
     
     // Función para obtener los estudiantes del grupo
     const fetchEstudiantesDelGrupo = async () => {
@@ -182,7 +187,7 @@ export default  function Tabla_alumnos_calificaciones({ userId, periodos, asigna
                 
                     <select className='select select-bordered w-50 max-w-xs m-2 ml-4'  onChange={handlePeriodoChange} value={periodoSeleccionado}>
                             
-                            {periodos.map((periodo) => (
+                            {periodosOrdenados.map((periodo) => (
                                 <option key={periodo.id} value={periodo.id}   >{periodo.name}</option>
                                 ))}
                         </select>
@@ -282,14 +287,14 @@ export default  function Tabla_alumnos_calificaciones({ userId, periodos, asigna
                                 <span 
                                     className={
                                         `font-bold px-5 py-3 rounded-md text-white ${
-                                            contadorCalificaciones > 0 && (sumaCalificaciones / contadorCalificaciones) > 65 
+                                            contadorCalificaciones > 0 && (sumaCalificaciones / contadorCalificaciones).toFixed(1) > 65 
                                             ? 'bg-green-500' 
                                             : 'bg-red-500'
                                         }`
                                     }
                                 >
                                     {contadorCalificaciones > 0 
-                                        ? (sumaCalificaciones / contadorCalificaciones)
+                                        ? (sumaCalificaciones / contadorCalificaciones).toFixed(1)
                                         : 'Sin calificar'
                                     }
                                 </span>
