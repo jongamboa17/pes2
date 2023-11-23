@@ -24,6 +24,7 @@ export default  function Tabla_alumnos_calificaciones({ userId, periodos, asigna
     const [periodoSeleccionado, setPeriodoSeleccionado] = useState(null);
     const [calificaciones, setCalificaciones] = useState([]);
 
+    const [hayCriterios, setHayCriterios] = useState(true);
     /*useEffect(() => {
         if (periodos.length > 0) {
             // Ordena los períodos de más reciente a más antiguo
@@ -127,6 +128,8 @@ export default  function Tabla_alumnos_calificaciones({ userId, periodos, asigna
              //filrar los criterios de evaluacion que tengan id igual a criteriosAsignadosEnPadre
             const criteriosFiltrados = data.filter(criterio => criteriosAsignadosEnPadre.includes(criterio.id));
             setCriteriosEvaluacion(criteriosFiltrados);
+            // Establecer si hay criterios o no
+            setHayCriterios(criteriosFiltrados.length > 0);
 
         }
     }
@@ -211,117 +214,138 @@ export default  function Tabla_alumnos_calificaciones({ userId, periodos, asigna
                 
                 </p>
             </div>
-            <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+            {/**TABLA CALIFICACIONES */}
+            {
+                hayCriterios ? (
+                    // Si hay criterios, muestra la tabla normalmente
+                    <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                         <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                     
-                    <tr>
-                        
-                        <th scope="col" class=" invisible sm:visible py-3">
-                            <center>
-                            Nombre
-                            </center>
-                        </th>
-
-
-                        {criteriosEvaluacion.map((criterio) => (
-                            <th scope="col" class="invisible sm:visible py-3 " key={criterio.id}>
+                            <tr>
                                 
-                                
-                                <center>
-                                {criterio.name} - {criterio.weight}{' '}{'%'}
-                                </center>
-                                
-                            </th>
-                        ))}
-                        
-                        <th scope="col" class=" py-3 ">
-                            <center>    
-                            <span className='font-bold '>Nota final</span>
-                            </center>
-                        </th>
-                        <th scope="col" class="invisible sm:visible py-3">
-                            <center>
-                            
-                            </center>
-                        </th>
-                        
-                    </tr>
-                </thead>
-                <tbody>
-                    {estudiantes.map((estudiante) => {
-                    // Inicializa la suma de calificaciones para cada estudiante
-                    let sumaCalificaciones = 0;
-                    let contadorCalificaciones = 0;
+                                <th scope="col" class=" invisible sm:visible py-3">
+                                    <center>
+                                    Nombre
+                                    </center>
+                                </th>
 
-                    return (
-                    <tr key={estudiante.id} class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                        <th scope="row" class="py-4">
-                            <center>    
-                            {estudiante.name}
-                            </center>    
-                        </th>
-                        {criteriosEvaluacion.map((criterio) => {
-                            const calificacionEncontrada = calificaciones.find(calificacion => 
-                                calificacion.alumno_id === estudiante.id && calificacion.criterio_id === criterio.id);
 
-                            // Suma la calificación encontrada
-                            if (calificacionEncontrada) {
-                                sumaCalificaciones += calificacionEncontrada.calificacion;
-                                contadorCalificaciones++;
-                            }
+                                {criteriosEvaluacion.map((criterio) => (
+                                    <th scope="col" class="invisible sm:visible py-3 " key={criterio.id}>
+                                        
+                                        
+                                        <center>
+                                        {criterio.name} - {criterio.weight}{' '}{'%'}
+                                        </center>
+                                        
+                                    </th>
+                                ))}
+                                
+                                <th scope="col" class=" py-3 ">
+                                    <center>    
+                                    <span className='font-bold '>Nota final</span>
+                                    </center>
+                                </th>
+                                <th scope="col" class="invisible sm:visible py-3">
+                                    <center>
+                                    
+                                    </center>
+                                </th>
+                                
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {estudiantes.map((estudiante) => {
+                            // Inicializa la suma de calificaciones para cada estudiante
+                            let sumaCalificaciones = 0;
+                            let contadorCalificaciones = 0;
 
                             return (
-                                <td class="py-4 invisible sm:visible" key={criterio.id}>
+                            <tr key={estudiante.id} class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                                <th scope="row" class="py-4">
+                                    <center>    
+                                    {estudiante.name}
+                                    </center>    
+                                </th>
+                                {criteriosEvaluacion.map((criterio) => {
+                                    const calificacionEncontrada = calificaciones.find(calificacion => 
+                                        calificacion.alumno_id === estudiante.id && calificacion.criterio_id === criterio.id);
+
+                                    // Suma la calificación encontrada
+                                    if (calificacionEncontrada) {
+                                        sumaCalificaciones += calificacionEncontrada.calificacion;
+                                        contadorCalificaciones++;
+                                    }
+
+                                    return (
+                                        <td class="py-4 invisible sm:visible" key={criterio.id}>
+                                            <center>
+                                                {calificacionEncontrada ? calificacionEncontrada.calificacion : 'Sin calificar'}
+                                            </center>
+                                        </td>
+                                    );
+                                })}
+                            
+                            
+                            
+
+                            <th scope="col" class="py-3">
+                                    <center> 
+                                        <span 
+                                            className={
+                                                `font-bold px-5 py-3 rounded-md text-white ${
+                                                    contadorCalificaciones > 0 && (sumaCalificaciones / contadorCalificaciones).toFixed(1) > 65 
+                                                    ? 'bg-green-500' 
+                                                    : 'bg-red-500'
+                                                }`
+                                            }
+                                        >
+                                            {contadorCalificaciones > 0 
+                                                ? (sumaCalificaciones / contadorCalificaciones).toFixed(1)
+                                                : 'Sin calificar'
+                                            }
+                                        </span>
+                                    </center>
+                                </th>
+
+                                <td class=" py-4">
                                     <center>
-                                        {calificacionEncontrada ? calificacionEncontrada.calificacion : 'Sin calificar'}
+                                        <label htmlFor={`modal_estudiante_${estudiante.id}`} className="text-white bg-green-600 hover:bg-blue-800 
+                                                                focus:ring-4 focus:outline-none focus:ring-blue-300  
+                                                                font-medium rounded-lg text-sm px-3 py-2.5 text-center 
+                                                                inline-flex items-center  dark:bg-blue-600 dark:hover:bg-blue-700 
+                                                                dark:focus:ring-blue-800">
+                                            <svg class="w-4 h-4 text-white dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 18">
+                                                <path d="M12.687 14.408a3.01 3.01 0 0 1-1.533.821l-3.566.713a3 3 0 0 1-3.53-3.53l.713-3.566a3.01 3.01 0 0 1 .821-1.533L10.905 2H2.167A2.169 2.169 0 0 0 0 4.167v11.666A2.169 2.169 0 0 0 2.167 18h11.666A2.169 2.169 0 0 0 16 15.833V11.1l-3.313 3.308Zm5.53-9.065.546-.546a2.518 2.518 0 0 0 0-3.56 2.576 2.576 0 0 0-3.559 0l-.547.547 3.56 3.56Z"/>
+                                                <path d="M13.243 3.2 7.359 9.081a.5.5 0 0 0-.136.256L6.51 12.9a.5.5 0 0 0 .59.59l3.566-.713a.5.5 0 0 0 .255-.136L16.8 6.757 13.243 3.2Z"/>
+                                            </svg>    
+                                        </label> 
+                                        
                                     </center>
                                 </td>
-                            );
-                        })}
-                       
-                       
-                       
-
-                       <th scope="col" class="py-3">
-                            <center> 
-                                <span 
-                                    className={
-                                        `font-bold px-5 py-3 rounded-md text-white ${
-                                            contadorCalificaciones > 0 && (sumaCalificaciones / contadorCalificaciones).toFixed(1) > 65 
-                                            ? 'bg-green-500' 
-                                            : 'bg-red-500'
-                                        }`
-                                    }
-                                >
-                                    {contadorCalificaciones > 0 
-                                        ? (sumaCalificaciones / contadorCalificaciones).toFixed(1)
-                                        : 'Sin calificar'
-                                    }
-                                </span>
-                            </center>
-                        </th>
-
-                        <td class=" py-4">
-                            <center>
-                                <label htmlFor={`modal_estudiante_${estudiante.id}`} className="text-white bg-green-600 hover:bg-blue-800 
-                                                        focus:ring-4 focus:outline-none focus:ring-blue-300  
-                                                        font-medium rounded-lg text-sm px-3 py-2.5 text-center 
-                                                        inline-flex items-center  dark:bg-blue-600 dark:hover:bg-blue-700 
-                                                        dark:focus:ring-blue-800">
-                                    <svg class="w-4 h-4 text-white dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 18">
-                                        <path d="M12.687 14.408a3.01 3.01 0 0 1-1.533.821l-3.566.713a3 3 0 0 1-3.53-3.53l.713-3.566a3.01 3.01 0 0 1 .821-1.533L10.905 2H2.167A2.169 2.169 0 0 0 0 4.167v11.666A2.169 2.169 0 0 0 2.167 18h11.666A2.169 2.169 0 0 0 16 15.833V11.1l-3.313 3.308Zm5.53-9.065.546-.546a2.518 2.518 0 0 0 0-3.56 2.576 2.576 0 0 0-3.559 0l-.547.547 3.56 3.56Z"/>
-                                        <path d="M13.243 3.2 7.359 9.081a.5.5 0 0 0-.136.256L6.51 12.9a.5.5 0 0 0 .59.59l3.566-.713a.5.5 0 0 0 .255-.136L16.8 6.757 13.243 3.2Z"/>
-                                    </svg>    
-                                </label> 
                                 
-                            </center>
-                        </td>
-                        
-                    </tr>
-                    );
-                    })}
-                </tbody>
-            </table>
+                            </tr>
+                            );
+                            })}
+                        </tbody>
+                    </table>
+                ) : (
+                    // Si no hay criterios, muestra un mensaje
+                        <center>
+                            <div className=" rounded-md font-medium w-[600px] text-black bg-yellow-400 p-2">
+                                <p className=''>
+                                    No hay criterios de evaluación asignados. Por favor, agrega algunos criterios.
+                                </p>
+                            </div>
+                        </center>
+                
+               
+                    
+                    
+                    
+                )
+            }
+            
         
         
             {estudiantes.map((estudiante) => (

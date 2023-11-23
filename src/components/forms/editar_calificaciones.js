@@ -183,9 +183,10 @@ export default function Editar_calificaciones({grupoId,periodoSeleccionado2, est
     return (
         <>
             <div class="relative p-4 bg-white rounded-lg shadow dark:bg-gray-800 sm:p-5">
-                    <div class="flex justify-between items-center pb-4 mb-4 rounded-t border-b sm:mb-5 dark:border-gray-600">
+        
+                    <div class="flex justify-center items-center pb-4 mb-4 rounded-t border-b sm:mb-5 dark:border-gray-600">
                         <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-                            Editar Calificaciones - Periodo: {periodoSeleccionado2}
+                            Editar Calificaciones
                             
                         </h3>
                     </div>
@@ -239,9 +240,11 @@ export default function Editar_calificaciones({grupoId,periodoSeleccionado2, est
 
                         
                         </div>
-                        <button type="submit" class="text-white inline-flex items-center bg-lime-700 hover:bg-lime-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
-                            Guardar
-                        </button>
+                        <div className="flex justify-center items-center">
+                            <button type="submit" class="text-white inline-flex items-center bg-lime-700 hover:bg-lime-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
+                                Guardar
+                            </button>
+                        </div>
                     </form>
                 </div>
         </>
