@@ -41,32 +41,35 @@ export default function AdminParent() {
         console.log('alumnosAsignadosGrupos:', alumnosAsignadosGrupos);
     }, [alumnosAsignados]);*/
     
-
-    useEffect(() => {
-        //traer datos de la base de datos cantidad de docentes
+    //traer datos de la base de datos cantidad de docentes
         
-        let profileData = [];
-        const fetchAlumnos = async () => {
-        const { data, error } = await supabase
-            .from('profiles') // Reemplazar 'docentes' con el nombre real de tu tabla
-            .select('*'); // Ajustar para seleccionar solo los campos necesarios
-     
-        if (error) {
-            console.error('Error al obtener datos de docentes:', error);
-        } else {
-            //console.log('Alumnos:', data);
-            //profileData = data;
-            //filtrar los docentes por rol y campo activo sea igual a false
-     
-            profileData = data.filter((alumno) => alumno.role === 'Alumno' && alumno.activo === false);
-            //setAlumnos(profileData);
-            setAlumnosInactivos(profileData);
-            //console.log('AlumnossSSSSSSSSS:', profileData);
-        }
-        };
+    let profileData = [];
+    const fetchAlumnos = async () => {
+    const { data, error } = await supabase
+        .from('profiles') // Reemplazar 'docentes' con el nombre real de tu tabla
+        .select('*'); // Ajustar para seleccionar solo los campos necesarios
+ 
+    if (error) {
+        console.error('Error al obtener datos de docentes:', error);
+    } else {
+        //console.log('Alumnos:', data);
+        //profileData = data;
+        //filtrar los docentes por rol y campo activo sea igual a false
+ 
+        profileData = data.filter((alumno) => alumno.role === 'Alumno' && alumno.activo === false);
+        //setAlumnos(profileData);
+        setAlumnosInactivos(profileData);
+        //console.log('AlumnossSSSSSSSSS:', profileData);
+    }
+    };
+    
+    useEffect(() => {
+        
          fetchAlumnos();
        }, []);
 
+
+       //funcion para activar alumnos
        const activarAlumnos = async (idsActivados) => {
         console.log('idsActivados:', idsActivados);
         setAlumnosPendientes(idsActivados);
@@ -126,7 +129,7 @@ export default function AdminParent() {
 
             <div className="py-1 px-5 grid grid-cols-2   gap-y-3 grid-flow-row-dense ">
                 <div className="bg-white rounded-lg shadow-xl min-h-[400px] row-span-5 ">
-                    <Accordion3 nuevosAlumnos={alumnosAsignadosGrupos}></Accordion3>
+                    <Accordion3 nuevosAlumnos={alumnosAsignadosGrupos} fetchAlumnos2={fetchAlumnos}></Accordion3>
                 </div>
                 <div className="bg-white rounded-lg  min-h-[400px] row-span-5">
                     <div className=" px-5 grid grid-cols-1 gap-x-2 gap-y-3 grid-flow-row-dense">
