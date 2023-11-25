@@ -11,6 +11,21 @@ const CalificacionesEstudiante = ({ userId }) => {
     const [criterios, setCriterios] = useState({});
     const [openCollapsibles, setOpenCollapsibles] = useState({});
 
+    //obtener criterios de la base de datos
+    const fetchCriterios = async () => {
+        // Obtener criterios
+        let { data: criteriosData, error: criteriosError } = await supabase.from('criterios_evaluacion').select('*');
+        if (criteriosError) {
+            console.error('Error al obtener criterios', criteriosError);
+            return;
+        }
+        const criteriosMap = criteriosData.reduce((map, criterio) => {
+            map[criterio.id] = criterio.name;
+            return map;
+        }, {});
+        setCriterios(criteriosMap);
+    }
+
     // Carga inicial de periodos, asignaturas y criterios
     useEffect(() => {
         const fetchInitialData = async () => {
@@ -44,17 +59,8 @@ const CalificacionesEstudiante = ({ userId }) => {
             }, {});
             setOpenCollapsibles(initialOpenState);
     
-            // Obtener criterios
-            let { data: criteriosData, error: criteriosError } = await supabase.from('criterios_evaluacion').select('*');
-            if (criteriosError) {
-                console.error('Error al obtener criterios', criteriosError);
-                return;
-            }
-            const criteriosMap = criteriosData.reduce((map, criterio) => {
-                map[criterio.id] = criterio.name;
-                return map;
-            }, {});
-            setCriterios(criteriosMap);
+            fetchCriterios();
+            
         };
     
         fetchInitialData();
@@ -97,6 +103,7 @@ const CalificacionesEstudiante = ({ userId }) => {
 
         if (periodoSeleccionado) {
             fetchCalificaciones();
+            fetchCriterios();
         }
     }, [periodoSeleccionado, userId]);
 
@@ -117,7 +124,7 @@ const CalificacionesEstudiante = ({ userId }) => {
                 </select>
             </div>
             </center>
-            <div className='overflow-y-auto h-96'>
+            <div className='overflow-y-auto'>
 
             
             {/* Display calificaciones */}
