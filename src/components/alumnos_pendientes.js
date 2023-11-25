@@ -38,9 +38,9 @@ export default function Alumnos_pendientes({ alumnosInactivos, onActivarAlumnos 
 
   
   //useeffect para observar los seleccionados
-  useEffect(() => {
-    console.log('Seleccionados:', seleccionados);
-  }, [seleccionados]);
+  //useEffect(() => {
+    //console.log('Seleccionados:', seleccionados);
+  //}, [seleccionados]);
     
     
      
