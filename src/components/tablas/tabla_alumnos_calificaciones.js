@@ -147,8 +147,8 @@ export default  function Tabla_alumnos_calificaciones({ userId, periodos, asigna
             console.log('error', error);
         }
         else {
-            console.log('dataCALIFICACIONES', data);
-            console.log('DATA2', data[0].metadata[0].criterioId);
+            //console.log('dataCALIFICACIONES', data);
+            //console.log('DATA2', data[0].metadata[0].criterioId);
         }
 
 
@@ -165,7 +165,7 @@ export default  function Tabla_alumnos_calificaciones({ userId, periodos, asigna
             console.log('error', error);
         }
         else {
-            console.log('dataCALIFICACIONES', data);
+            //console.log('dataCALIFICACIONES', data);
             
         }
     };

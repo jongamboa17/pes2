@@ -24,6 +24,15 @@ export default function Criterios_evaluacion({ userId, asignaturas, modalId, gru
 
     //estado para guardar los criterios asignados a la asignatura
     const [criteriosAsignados, setCriteriosAsignados] = useState([]);
+
+    //suma de los porcentajes de los criterios seleccionados
+    /**const sumaTotalPorcentajesAsignados = selectedCriterios.reduce((total, criterioId) => {
+        const peso = criterioWeights[criterioId] || 0;
+        return total + peso;
+    }, 0);*/
+    
+
+
     
     //obtener los criterios asignados a la asignatura para enviarlos al componente padre
     const enviarCriteriosAsignados = () => {
@@ -53,14 +62,21 @@ export default function Criterios_evaluacion({ userId, asignaturas, modalId, gru
     const fetchCriteriosAsignados = async () => {
         const { data } = await supabase
             .from('asignacion_criterios')
-            .select('criterio_id')
+            .select(`
+            criterio_id,
+            criterios_evaluacion(weight)
+            `)
             .eq('grupo_id', grupoId)
             .eq('asignatura_id', asignaturas[0].id);
 
         if (data) {
-            
-            const criteriosIds = data.map((item) => item.criterio_id);
-            setCriteriosAsignados(criteriosIds);
+            // Procesar la data para extraer los pesos y actualizar el estado
+            const nuevosPonderados = data.reduce((acc, item) => {
+                acc[item.criterio_id] = item.criterios_evaluacion.weight;
+                return acc;
+            }, {});
+            setCriterioWeights(nuevosPonderados);
+            setCriteriosAsignados(data.map((item) => item.criterio_id));
 
         }   
     };
@@ -233,7 +249,7 @@ export default function Criterios_evaluacion({ userId, asignaturas, modalId, gru
     }, []);
 
     useEffect(() => {
-        console.log('criteriosAsignados DESDE FETCH CRITERIOSASIGNADOS:', criteriosAsignados);
+        //console.log('criteriosAsignados DESDE FETCH CRITERIOSASIGNADOS:', criteriosAsignados);
         enviarCriteriosAsignados();
 }), [criteriosAsignados];
     
@@ -352,6 +368,9 @@ export default function Criterios_evaluacion({ userId, asignaturas, modalId, gru
                                 Agregar
                             </button>  
                             
+                            {/*<div className="py-2">
+                                <span className="text-sm font-semibold">Porcentaje asignado: {sumaTotalPorcentajesAsignados}%</span>
+                            </div>*/}
                            
                              {/*<input 
                                 type="number" 
