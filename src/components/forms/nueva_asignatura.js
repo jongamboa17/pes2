@@ -101,7 +101,7 @@ export default function Nueva_asignatura({ modalId }){
         // Insertar la asignatura
         const response = await supabase
             .from('asignaturas')
-            .insert([{ name: nombreAsignatura }]);
+            .insert([{ name: nombreAsignatura, docente_id: docenteSeleccionado }]);
     
         let asignaturaInsertada;
     
