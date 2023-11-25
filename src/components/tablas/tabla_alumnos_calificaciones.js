@@ -264,7 +264,7 @@ export default  function Tabla_alumnos_calificaciones({ userId, periodos, asigna
                             <tr key={estudiante.id} class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                                 <th scope="row" class="py-4">
                                     <center>    
-                                    {estudiante.name}
+                                    {estudiante.name}{' '} {estudiante.lastname}
                                     </center>    
                                 </th>
                                 {criteriosEvaluacion.map((criterio) => {
