@@ -18,6 +18,7 @@ export default function AdminParent() {
     //const [alumnosAsignados, setAlumnosAsignados] = useState([]);
     //constante para enviar alumnosAsignados a accordion3
     const [alumnosAsignadosGrupos, setAlumnosAsignadosGrupos] = useState([]);
+    //const [periodos, setPeriodos] = useState([]);
 
     const manejarDatosPendienteGrupo = (datos) => {
         //vaciar alumnosAsignados a grupos antes de agregar nuevos datos
@@ -110,9 +111,77 @@ export default function AdminParent() {
         return actualizados; // Devuelve true si todos los alumnos se han actualizado correctamente
     };
     
+    const fetchPeriodos = async () => {
+        const { data } = await supabase.from('periodos').select('*');
+        let periodosOrdenados = [];
+        if (data) {
+            // Ordenar los períodos
+            periodosOrdenados = [...data].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+        }
+        return periodosOrdenados;
+    };
+    
+    const numeroARomano = (numero) => {
+        switch (numero) {
+            case 1:
+                return 'I';
+            case 2:
+                return 'II';
+            case 3:
+                return 'III';
+            case 4:
+                return 'IV';
+            default:
+                return '';
+        }
+    };
+
+    const agregarPeriodo = async () => {
+
+        // Obtener los períodos
+        const periodos = await fetchPeriodos();
+        if (window.confirm("¿Estás seguro de que quieres agregar un nuevo periodo lectivo?")) {
+        // Verificar si hay períodos
+        if (periodos.length > 0) {
+            // Obtener el último período
+            const ultimoPeriodo = periodos[0];
+            
+            // Extraer el año y el número de trimestre del último período
+            const year = ultimoPeriodo.year;
+            const trimestre = ultimoPeriodo.numero_trimestre;
+            
+            // Determinar el año y el trimestre del nuevo período
+            let nuevoYear = year;
+            let nuevoTrimestre = trimestre + 1;
+            
+            // Si el último trimestre fue el 4, entonces el nuevo período debe ser el trimestre 1 del próximo año
+            if (nuevoTrimestre > 4) {
+                nuevoYear += 1;
+                nuevoTrimestre = 1;
+            }
+            // Convertir el número del trimestre a romano
+            const trimestreRomano = numeroARomano(nuevoTrimestre);
+
+            // Crear el nombre del nuevo período
+            const nuevoNombre = `${nuevoYear}-Periodo ${trimestreRomano}`;
+            
+            // Agregar el nuevo período a la base de datos
+            const { error } = await supabase.from('periodos').insert([{ year: nuevoYear, numero_trimestre: nuevoTrimestre, name: nuevoNombre }]);
+            
+            if (error) {
+                console.log('Error al agregar el nuevo período:', error);
+            } else {
+                toast.success('El nuevo período se agregó con éxito 👍');
+                console.log('Nuevo período agregado con éxito:', nuevoNombre);
+            }
+        }
+        }
+    };
+    
     
     return (
     <>
+    <ToastContainer />
       <div className="py-1 px-5 grid grid-cols-1 gap-x-2 gap-y-3 grid-flow-row-dense">
             
             {/**botones */}
@@ -132,6 +201,12 @@ export default function AdminParent() {
                         <label htmlFor="my_modal_8" className="">Nueva Asignatura</label>
                     </button>
                     
+                    <button className=" px-5 sm:p-5 text-white bg-blue-700 hover:bg-blue-800 
+                                        focus:outline-none font-medium text-sm rounded-lg py-2.5 text-center mr-5 "
+                            onClick={agregarPeriodo}
+                                        >
+                        Nuevo periodo
+                    </button>
                 </div>    
             </div> 
             
