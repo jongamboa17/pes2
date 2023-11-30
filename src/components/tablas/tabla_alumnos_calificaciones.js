@@ -186,9 +186,9 @@ export default  function Tabla_alumnos_calificaciones({ userId, periodos, asigna
     return (
         <>
            <div class="flow-root">  
-                <p class="float-left font-bold p-2">Tabla Alumnos
+                <p class="float-left font-bold p-1">Tabla Alumnos
                 
-                    <select className='select select-bordered w-50 max-w-xs m-2 ml-4'  onChange={handlePeriodoChange} value={periodoSeleccionado}>
+                    <select className='select select-bordered w-50 max-w-xs m-2 ml-2'  onChange={handlePeriodoChange} value={periodoSeleccionado}>
                             
                             {periodosOrdenados.map((periodo) => (
                                 <option key={periodo.id} value={periodo.id}   >{periodo.name}</option>
@@ -223,7 +223,7 @@ export default  function Tabla_alumnos_calificaciones({ userId, periodos, asigna
                     
                             <tr>
                                 
-                                <th scope="col" class=" invisible sm:visible py-3">
+                                <th scope="col" class="  py-3">
                                     <center>
                                     Nombre
                                     </center>
@@ -231,7 +231,7 @@ export default  function Tabla_alumnos_calificaciones({ userId, periodos, asigna
 
 
                                 {criteriosEvaluacion.map((criterio) => (
-                                    <th scope="col" class="invisible sm:visible py-3 " key={criterio.id}>
+                                    <th scope="col" class="hidden md:table-cell py-3 " key={criterio.id}>
                                         
                                         
                                         <center>
@@ -278,7 +278,7 @@ export default  function Tabla_alumnos_calificaciones({ userId, periodos, asigna
                                     }
 
                                     return (
-                                        <td class="py-4 invisible sm:visible" key={criterio.id}>
+                                        <td class="py-4 hidden md:table-cell" key={criterio.id}>
                                             <center>
                                                 {calificacionEncontrada ? calificacionEncontrada.calificacion : 'Sin calificar'}
                                             </center>
@@ -289,24 +289,32 @@ export default  function Tabla_alumnos_calificaciones({ userId, periodos, asigna
                             
                             
 
-                            <th scope="col" class="py-3">
-                                    <center> 
-                                        <span 
-                                            className={
-                                                `font-bold px-5 py-3 rounded-md text-white ${
-                                                    contadorCalificaciones > 0 && (sumaCalificaciones / contadorCalificaciones).toFixed(1) > 65 
-                                                    ? 'bg-green-500' 
-                                                    : 'bg-red-500'
-                                                }`
-                                            }
-                                        >
-                                            {contadorCalificaciones > 0 
-                                                ? (sumaCalificaciones / contadorCalificaciones).toFixed(1)
-                                                : 'Sin calificar'
-                                            }
-                                        </span>
-                                    </center>
-                                </th>
+                            <td scope="col" class="py-3 ">
+                            <center> 
+                                {/* Para móviles: muestra '-' si no hay calificaciones */}
+                                <span 
+                                    className={`font-bold px-5 py-3 rounded-md text-white ${
+                                        contadorCalificaciones > 0 && (sumaCalificaciones / contadorCalificaciones).toFixed(1) > 65 
+                                        ? 'bg-green-500' 
+                                        : 'bg-red-500'
+                                    } md:hidden`} // Se oculta en pantallas más grandes
+                                >
+                                    {contadorCalificaciones > 0 ? (sumaCalificaciones / contadorCalificaciones).toFixed(1) : '-'}
+                                </span>
+
+                                {/* Para pantallas más grandes: muestra 'Sin calificar' o la calificación */}
+                                <span 
+                                    className={`font-bold px-5 py-3 rounded-md text-white w-1/2 ${
+                                        contadorCalificaciones > 0 && (sumaCalificaciones / contadorCalificaciones).toFixed(1) > 65 
+                                        ? 'bg-green-500' 
+                                        : 'bg-red-500'
+                                    } hidden md:block`} // Se oculta en móviles
+                                >
+                                    {contadorCalificaciones > 0 ? (sumaCalificaciones / contadorCalificaciones).toFixed(1) : 'Sin calificar'}
+                                </span>
+                            </center>
+
+                                </td>
 
                                 <td class=" py-4">
                                     <center>
@@ -320,7 +328,6 @@ export default  function Tabla_alumnos_calificaciones({ userId, periodos, asigna
                                                 <path d="M13.243 3.2 7.359 9.081a.5.5 0 0 0-.136.256L6.51 12.9a.5.5 0 0 0 .59.59l3.566-.713a.5.5 0 0 0 .255-.136L16.8 6.757 13.243 3.2Z"/>
                                             </svg>    
                                         </label> 
-                                        
                                     </center>
                                 </td>
                                 
