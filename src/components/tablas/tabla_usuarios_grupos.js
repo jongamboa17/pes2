@@ -3,7 +3,7 @@ import logo from '../../utilities/logo1.png'
 import 'flowbite'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { useEffect, useState } from 'react';
-export default function Tabla_usuarios_grupos({grupoId,nuevoUsuario, fetchAlumnos2}) {    
+export default function Tabla_usuarios_grupos({grupoId,nuevoUsuario, fetchAlumnos2, manejarDatosDesdeAccordion}) {    
     const [alumnos, setAlumnos] = useState([]);
     const supabase = createClientComponentClient();
     const [loading, setLoading] = useState(false);
@@ -52,6 +52,30 @@ export default function Tabla_usuarios_grupos({grupoId,nuevoUsuario, fetchAlumno
         }
     }, [grupoId]);
 
+    // Función para cambiar el grupo de un usuario
+    const cambiarGrupo = async (userId) => {
+        if (window.confirm("¿Estás seguro de que quieres quitar este usuario del grupo?")) {
+            setLoading(true);
+            const actualizacion = { Grupo: null };
+    
+            const { error } = await supabase
+                .from('profiles')
+                .update(actualizacion)
+                .eq('id', userId);
+        
+            if (error) {
+                console.error('Error al actualizar el grupo del usuario:', error);
+            } else {
+                manejarDatosDesdeAccordion(userId);
+                // Recarga los alumnos usando fetchAlumnos
+                fetchAlumnos2();
+                fetchAlumnos();
+
+            }
+            setLoading(false);
+        }
+    };
+    
     // Función para inactivar un usuario
     const actualizarActivo = async (userId, nuevoEstadoActivo) => {
         if (window.confirm("¿Estás seguro de que quieres desactivar este usuario?")) {
@@ -108,7 +132,7 @@ export default function Tabla_usuarios_grupos({grupoId,nuevoUsuario, fetchAlumno
                             
                         </th> 
                         <th scope="col" class="px-6 py-3">
-                            Acción
+                            
                         </th>
                     </tr>
                 </thead>
@@ -141,7 +165,7 @@ export default function Tabla_usuarios_grupos({grupoId,nuevoUsuario, fetchAlumno
                         <td class="px-6 py-4">
                         {alumno.activo ?
                                     <button type="button" 
-                                            class=" text-white  bg-red-500 hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center mr-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                    class="text-white bg-red-500 hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center mr-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                                             onClick={() => actualizarActivo(alumno.id, false)}
                                             >
                                         <svg class="w-3 h-3 text-white dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
@@ -149,7 +173,7 @@ export default function Tabla_usuarios_grupos({grupoId,nuevoUsuario, fetchAlumno
                                         </svg>
                                     </button>:
                                     <button type="button" 
-                                            class=" text-white  bg-red-500 hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center mr-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                    class="text-white bg-red-500 hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center mr-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                                             onClick={() => actualizarActivo(alumno.id, false)}
                                             >
                                         <svg class="w-3 h-3 text-white dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
@@ -157,7 +181,14 @@ export default function Tabla_usuarios_grupos({grupoId,nuevoUsuario, fetchAlumno
                                         </svg>
                                     </button>
                                 }
-                            
+                        <button type="button" 
+                                class="text-white bg-red-500 hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center mr-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                onClick={() => cambiarGrupo(alumno.id)}
+                        >
+                           <svg class="w-3 h-3 text-white dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 15">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 7.5h11m0 0L8 3.786M12 7.5l-4 3.714M12 1h3c.53 0 1.04.196 1.414.544.375.348.586.82.586 1.313v9.286c0 .492-.21.965-.586 1.313A2.081 2.081 0 0 1 15 14h-3"/>
+                            </svg>
+                        </button>
                         </td>
                     </tr>
                     

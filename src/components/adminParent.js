@@ -33,7 +33,16 @@ export default function AdminParent() {
         //vacia el estado alumnosPendientes
     }
 
+    //funcion para agregar un id a alumnosPendientes que viene del componente accordion3
+    const manejarDatosDesdeAccordion = (datos) => {
+        //vaciar alumnosPendientes antes de agregar nuevos datos
+        setAlumnosPendientes([]);
+        setTimeout(() => {
+        setAlumnosPendientes(datos);
+        }, 2000);   
+    }
     
+        
 
     //useEffect  cuando cambia el estado de alumnosAsignados y dar un console.log
     /**useEffect(() => {
@@ -71,9 +80,9 @@ export default function AdminParent() {
 
        //funcion para activar alumnos
        const activarAlumnos = async (idsActivados) => {
-        console.log('idsActivados:', idsActivados);
+        console.log('idsActivadosWW:', idsActivados);
         setAlumnosPendientes(idsActivados);
-        console.log('alumnosPendientes:', alumnosPendientes);
+        console.log('alumnosPendientesSS:', alumnosPendientes);
         let actualizados = false;
         for (const alumnoId of idsActivados) {
             const { data, error } = await supabase
@@ -129,7 +138,7 @@ export default function AdminParent() {
 
             <div className="py-1 px-5 grid grid-cols-2   gap-y-3 grid-flow-row-dense ">
                 <div className="bg-white rounded-lg shadow-xl min-h-[400px] row-span-5 ">
-                    <Accordion3 nuevosAlumnos={alumnosAsignadosGrupos} fetchAlumnos2={fetchAlumnos}></Accordion3>
+                    <Accordion3 nuevosAlumnos={alumnosAsignadosGrupos} fetchAlumnos2={fetchAlumnos} manejarDatosDesdeAccordion={manejarDatosDesdeAccordion}></Accordion3>
                 </div>
                 <div className="bg-white rounded-lg  min-h-[400px] row-span-5">
                     <div className=" px-5 grid grid-cols-1 gap-x-2 gap-y-3 grid-flow-row-dense">

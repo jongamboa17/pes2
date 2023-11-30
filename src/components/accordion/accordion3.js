@@ -4,7 +4,7 @@ import Criterios_evaluacion from '../forms/criterios_evaluacion'
 import { useState, useEffect } from 'react'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import useObtenerGradosYGrupos from '@/components/hooks/gradosygrupos';
-export default function Accordion3({nuevosAlumnos, fetchAlumnos2}){
+export default function Accordion3({nuevosAlumnos, fetchAlumnos2, manejarDatosDesdeAccordion}){
     const { gradosConGrupos, obtenerGradosYGrupos } = useObtenerGradosYGrupos();
     const supabase = createClientComponentClient();
     //constante para guardar los cambios de nuevosAlumnos
@@ -56,7 +56,7 @@ export default function Accordion3({nuevosAlumnos, fetchAlumnos2}){
                                 </div>
                                 
                             </div>
-                            <Tabla_usuarios_grupos fetchAlumnos2={fetchAlumnos2} nuevoUsuario={nuevosAlumnos} grupoId={grupo.id}></Tabla_usuarios_grupos>
+                            <Tabla_usuarios_grupos manejarDatosDesdeAccordion={manejarDatosDesdeAccordion} fetchAlumnos2={fetchAlumnos2} nuevoUsuario={nuevosAlumnos} grupoId={grupo.id}></Tabla_usuarios_grupos>
                         </div>
                     </div>
                     ))}
