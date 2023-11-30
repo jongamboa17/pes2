@@ -304,7 +304,7 @@ export default  function Tabla_alumnos_calificaciones({ userId, periodos, asigna
 
                                 {/* Para pantallas más grandes: muestra 'Sin calificar' o la calificación */}
                                 <span 
-                                    className={`font-bold px-5 py-3 rounded-md text-white w-1/2 ${
+                                    className={`font-bold  py-3 rounded-md text-white w-1/2 ${
                                         contadorCalificaciones > 0 && (sumaCalificaciones / contadorCalificaciones).toFixed(1) > 65 
                                         ? 'bg-green-500' 
                                         : 'bg-red-500'
