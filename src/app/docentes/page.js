@@ -6,7 +6,7 @@ import { useRouter,redirect } from 'next/navigation';
 import Navbar from "@/components/navbar";
 import Accordion_calificaciones from '@/components/accordion/accordion_calificaciones';
 import Accordion_calificaciones2 from '@/components/accordion/accordion_calificaciones2';
-
+import StatsDocente from '../../components/statsDocente';
 export default async function Home() {
     const supabase = createServerComponentClient({ cookies });
     
@@ -59,6 +59,10 @@ export default async function Home() {
         
     } 
     
+
+
+    
+
     return (
         
            
@@ -70,7 +74,7 @@ export default async function Home() {
                 {/**enviar user.id en el componente hijo */}
                 <Accordion_calificaciones2 userId={user ? user.id : null} />
             </div>
-            
+            <StatsDocente userId={user ? user.id : null}/>
             </>
 
     );

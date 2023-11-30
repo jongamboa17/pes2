@@ -77,19 +77,14 @@ export default function page ({ userId }) {
                     </div>
                 </div>
                 ))
-
-
          :(
             <center>
-
             <div className="alert alert-warning w-[300px]">No tienes una asignatura en este momento. Por favor contacta a la administración.</div>
             </center>
             )}
         {/**if para desplegar mensaje en lugar de los accordiones si asignaturaFiltrada es igual a null */}
 
         
-       
-
       </div>
     );
   
