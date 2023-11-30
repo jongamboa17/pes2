@@ -103,7 +103,7 @@ export default function statsDocente({userId}) {
 
   return (
     <center>
-            <div className="stats shadow mt-8">
+            <div className="stats shadow mt-8 stats-vertical md:stats-horizontal">
                 <div className="stat">
                     <div className="stat-figure text-primary">
                     
