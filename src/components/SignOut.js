@@ -16,7 +16,7 @@ export default function SignOut() {
   }
 
   return (
-    
+    <>
     <button type="button" 
             class=" text-white  hover:bg-green-400 focus:ring-4 
                     focus:outline-none focus:ring-white font-medium 
@@ -30,7 +30,9 @@ export default function SignOut() {
     </svg>
     <span class="sr-only">Icon description</span>
   </button>
+
   
+  </>
   );
 }
 
