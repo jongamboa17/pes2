@@ -228,15 +228,15 @@ export default function Pendientes_grupo({alumnosPendientes,onEnviarDatos}) {
         <ul class="h-40 py-2 overflow-y-auto text-gray-700 dark:text-gray-200" aria-labelledby="dropdownUsersButton">
         {alumnos.map((alumno) => (
             <li key={alumno.id}>
-                <a href="#" className="flex items-center px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                <a href="#" className="ml-6 flex items-center px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
                     <input
                         type="checkbox"
                         className="w-5 h-5 rounded-md mr-2"
                         onChange={() => handleAlumnoCheckboxChange(alumno.id)}
                         checked={alumnosSeleccionados.includes(alumno.id)}
                     />
-                    <Image className="w-6 h-6 mr-2 rounded-full" src={logo2} alt={`${alumno.name} ${alumno.lastname}`} />
-                    <span className='font-bold'>{alumno.name}{' '}{alumno.lastname}</span>
+                    
+                    <span className='ml-3 font-bold'>{alumno.name}{' '}{alumno.lastname}</span>
                 </a>
             </li>
         ))}

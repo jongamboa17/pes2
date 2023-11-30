@@ -77,15 +77,15 @@ export default function Alumnos_pendientes({ alumnosInactivos, onActivarAlumnos 
       <ul class="h-60 py-2 overflow-y-auto text-gray-700 dark:text-gray-200" aria-labelledby="dropdownUsersButton">
         {alumnosInactivos.map((alumno) => (
         <li key={alumno.id}>
-          <a href="#" class="flex items-center px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+          <a href="#" class="ml-6 flex items-center px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
           <input
             type="checkbox"
             className="w-5 h-5 rounded-md mr-2"
             onChange={() => handleCheckboxChange(alumno.id)}
             checked={seleccionados.includes(alumno.id)}
           />
-            <Image class="w-6 h-6 mr-2 rounded-full"  src={logo2} alt="Jese image"/>
-            <span className='font-bold'>{alumno.name}{' '}{alumno.lastname} </span>
+            
+            <span className='font-bold ml-3'>{alumno.name}{' '}{alumno.lastname} </span>
           </a>
         </li>
           ))}
