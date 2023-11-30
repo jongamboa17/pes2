@@ -122,7 +122,7 @@ const SignUpDocente = ({ modalId }) => {
   return (
     <div className="card bg-gray-100">
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-                            Nuevo Alumno
+                            Nuevo Docente
       </h3>
       <Formik
         initialValues={{
