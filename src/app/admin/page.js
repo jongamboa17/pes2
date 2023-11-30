@@ -2,6 +2,7 @@
 import 'flowbite';
 import Navbar from '@/components/navbar';
 import SignUp from 'src/components/Auth/SignUp';
+import SignUpDocente from '@/components/Auth/SignUpDocente';
 
 import Nuevo_usuario from "@/components/forms/nuevo_usuario"
 import Nuevo_docente from '@/components/forms/nuevo_docente';
@@ -122,7 +123,7 @@ export default async function page() {
         <input type="checkbox" id="my_modal_7" className="modal-toggle" />
         <div className="modal">
             <div className="modal-box">
-                <Nuevo_usuario></Nuevo_usuario>
+                <Nuevo_usuario modalId="my_modal_7"></Nuevo_usuario>
             </div>
             <label className="modal-backdrop" htmlFor="my_modal_7">Close</label>
         </div>
@@ -131,7 +132,7 @@ export default async function page() {
         <input type="checkbox" id="my_modal_20" className="modal-toggle" />
         <div className="modal">
             <div className="modal-box">
-                <Nuevo_docente></Nuevo_docente>
+                <Nuevo_docente modalId="my_modal_20" ></Nuevo_docente>
             </div>
             <label className="modal-backdrop" htmlFor="my_modal_20">Close</label>
         </div>

@@ -18,19 +18,17 @@ const SignUpSchema = Yup.object().shape({
 
 
 
-const SignUp = ({ modalId }) => {
+const SignUpDocente = ({ modalId }) => {
   const supabase = createClientComponentClient();
   const [errorMsg, setErrorMsg] = useState(null);
   const [successMsg, setSuccessMsg] = useState(null);
   const passwordInputRef = useRef(null);
-  const formRef = useRef(null);
-
+  const [asignaturas, setAsignaturas] = useState([]);
 
   const cerrarModal = () => {
     document.getElementById(modalId).checked = false;
-    limpiarFormulario();
   };
-
+ 
   const limpiarFormulario = () => {
     if (formRef.current) {
       formRef.current.reset();
@@ -93,7 +91,7 @@ const SignUp = ({ modalId }) => {
           const updates = {
             username: formData.email.split('@')[0],
             updated_at: new Date(),
-            role: 'Alumno',
+            role: 'Docente',
             email: formData.email,
             activo: formData.activo,
             number: formData.contacto,
@@ -104,12 +102,10 @@ const SignUp = ({ modalId }) => {
             .from('profiles')
             .update(updates)
             .eq('id', lastProfile.id);
-          
-          // Cerrar el modal
-          cerrarModal();
-          //limpiar el formulario
-          
 
+            // Cerrar el modal
+          cerrarModal();
+      
           if (updateError) {
             console.error('Error al actualizar el perfil:', updateError);
           }
@@ -125,11 +121,9 @@ const SignUp = ({ modalId }) => {
 
   return (
     <div className="card bg-gray-100">
-      
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
                             Nuevo Alumno
       </h3>
-      
       <Formik
         initialValues={{
           email: '',
@@ -141,13 +135,12 @@ const SignUp = ({ modalId }) => {
         onSubmit={signUp}
       >
         {({ errors, touched, setFieldValue }) => (
-          <Form ref={formRef} className="column w-full">
-            
+          <Form className="column w-full">
             <Field
               className={cn('input','border-gray-600', errors.email && 'bg-red-50')}
               id="email"
               name="email"
-              placeholder="Correo electrónico"
+              placeholder="Correo Electrónico"
               type="email"
             />
             {errors.email && touched.email ? (
@@ -188,7 +181,7 @@ const SignUp = ({ modalId }) => {
               id="nombre"
               name="nombre"
               type="name"
-              placeholder="Nombre completo"
+              placeholder="Nombre Completo"
             />
             {errors.nombre && touched.nombre ? (
               <div className="text-red-600">{errors.nombre}</div>
@@ -224,4 +217,4 @@ const SignUp = ({ modalId }) => {
   );
 };
 
-export default SignUp;
+export default SignUpDocente;
