@@ -82,6 +82,7 @@ export default function Nueva_asignatura({ modalId }){
     };
 
     const handleDocenteChange = (event) => {
+        event.preventDefault();
         setDocenteSeleccionado(event.target.value);
         console.log('Docente seleccionado:', event.target.value);
     };
@@ -180,7 +181,7 @@ export default function Nueva_asignatura({ modalId }){
                         <div class="flow-root">  
                                 <p class="float-left font-bold ">Asignar a:</p> 
                                 <p class="float-right">
-                                    <button onClick={seleccionarTodosGrados} className="text-white inline-flex items-center bg-blue-700 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
+                                    <button type='button' onClick={seleccionarTodosGrados} className="text-white inline-flex items-center bg-blue-700 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
                                         Todos
                                     </button> 
                                     <select className='select select-bordered w-30 max-w-xs m-2' onChange={handleDocenteChange} value={docenteSeleccionado}>

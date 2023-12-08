@@ -54,7 +54,7 @@ export default function Tabla_usuarios_grupos({grupoId,nuevoUsuario, fetchAlumno
 
     // Función para cambiar el grupo de un usuario
     const cambiarGrupo = async (userId) => {
-        if (window.confirm("¿Estás seguro de que quieres quitar este usuario del grupo?")) {
+        if (window.confirm("¿Estás seguro de que quieres eliminar el alumno del grupo?")) {
             setLoading(true);
             const actualizacion = { Grupo: null };
     
