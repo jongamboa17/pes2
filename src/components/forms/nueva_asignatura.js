@@ -98,11 +98,17 @@ export default function Nueva_asignatura({ modalId }){
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-    
+        
+        const nuevaAsignatura = { name: nombreAsignatura };
+
+        // Incluir docente_id solo si se ha seleccionado un docente
+        if (docenteSeleccionado) {
+            nuevaAsignatura.docente_id = docenteSeleccionado;
+        }
         // Insertar la asignatura
         const response = await supabase
             .from('asignaturas')
-            .insert([{ name: nombreAsignatura, docente_id: docenteSeleccionado }]);
+            .insert([nuevaAsignatura]);
     
         let asignaturaInsertada;
     
@@ -133,11 +139,19 @@ export default function Nueva_asignatura({ modalId }){
         console.log('Asignatura insertada:', asignaturaInsertada);
     
         // Insertar en la tabla intermedia
-        const relaciones = gradosSeleccionados.map(gradoId => ({
-            grado_id: gradoId,
-            asignatura_id: asignaturaInsertada.id,
-            docente_id: docenteSeleccionado
-        }));
+        const relaciones = gradosSeleccionados.map(gradoId => {
+            const relacion = {
+                grado_id: gradoId,
+                asignatura_id: asignaturaInsertada.id
+            };
+        
+            // Incluir docente_id solo si se ha seleccionado un docente
+            if (docenteSeleccionado) {
+                relacion.docente_id = docenteSeleccionado;
+            }
+        
+            return relacion;
+        });
     
         const responseRelaciones = await supabase
             .from('asignatura_grado')
