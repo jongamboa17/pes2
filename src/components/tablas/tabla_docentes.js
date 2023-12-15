@@ -8,7 +8,8 @@ import { useEffect, useState } from 'react';
 
 export default function Tabla_docentes({docentes,onActualizarDocentes}) {    
     const supabase = createClientComponentClient();
-
+    const [asignaturas, setAsignaturas] = useState([]);
+    const [selectedAsignaturas, setSelectedAsignaturas] = useState({});
     const actualizarActivo = async (docenteId, activoActual) => {
         const { error } = await supabase
         .from('profiles') // Asegúrate de que 'profiles' es el nombre de tu tabla
@@ -32,8 +33,60 @@ export default function Tabla_docentes({docentes,onActualizarDocentes}) {
         }
     };
 
-    //crear toast para mostrar mensaje de confirmacion
+
+    const getAsignaturas = async () => {
+        let { data: asignaturas, error } = await supabase
+        .from('asignaturas')
+        .select('*');
     
+        if (error) {
+            console.error('Error al obtener asignaturas:', error);
+        } else {
+            console.log('Asignaturas recibidas:', asignaturas); // Agrega esta línea para depurar
+            setAsignaturas(asignaturas);
+            
+        }
+    };
+
+    const handleAsignaturaChange = async (docenteId, newAsignaturaId) => {
+        let updateData;
+
+        // Si se selecciona "Sin asignar", establecer docente_id a null
+        if (newAsignaturaId === '') {
+            updateData = { docente_id: null };
+        } else {
+            updateData = { docente_id: docenteId };
+        }
+
+        const { error } = await supabase
+        .from('asignaturas')
+        .update(updateData)
+        .eq('id', newAsignaturaId === '' ? null : newAsignaturaId);
+
+        if (error) {
+            console.error('Error al actualizar la asignatura:', error);
+            // Manejar el error (mostrar mensaje al usuario, etc.)
+        } else {
+            setSelectedAsignaturas(prev => ({
+                ...prev,
+                [docenteId]: newAsignaturaId
+            }));
+        }
+    };
+
+    useEffect(() => {
+        getAsignaturas(); // Llama a esta función solo una vez al montar el componente
+    }, []);
+    
+    useEffect(() => {
+        // Inicializar el estado local con los valores actuales de asignaturas para cada docente
+        const initialSelected = {};
+        docentes.forEach(docente => {
+            initialSelected[docente.id] = asignaturas.find(asignatura => asignatura.docente_id === docente.id)?.id || '';
+        });
+        setSelectedAsignaturas(initialSelected);
+    }, [docentes, asignaturas]);
+
     return (
         <>
         <div class="relative overflow-y-auto h-80 overflow-x-auto shadow-md sm:rounded-lg">
@@ -77,7 +130,17 @@ export default function Tabla_docentes({docentes,onActualizarDocentes}) {
                         </th>
                         
                         <td class="px-10 py-4">
-                            Ingles
+                            <select
+                                class="form-select form-select-sm appearance-none block w-full px-2 py-1 text-sm font-normal text-gray-700 bg-white bg-clip-padding bg-no-repeat border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+                                aria-label=".form-select-sm example"
+                                value={selectedAsignaturas[docente.id] || ''}
+                                onChange={(e) => handleAsignaturaChange(docente.id, e.target.value)}
+                            >
+                                <option value="">Sin asignar</option>
+                                {asignaturas.map((asignatura) => (
+                                    <option key={asignatura.id} value={asignatura.id}>{asignatura.name}</option>
+                                ))}
+                            </select>
                         </td>
                         <td class="px-6 py-4">
                             <div class="flex items-center px-3">
