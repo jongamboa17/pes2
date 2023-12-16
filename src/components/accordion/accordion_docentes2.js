@@ -30,6 +30,14 @@ export default function Accordion_docentes2() {
    const actualizarDocentes = (docentesActualizados) => {
     setDocentes(docentesActualizados);
   };
+
+  const actualizarDocentes2 = (docentesActualizados) => {
+    setDocentes(prevDocentes =>
+      prevDocentes.map(doc => 
+          doc.id === docentesActualizados.id ? { ...doc, ...docentesActualizados } : doc
+      )
+  );
+  };
     
   
   return (
@@ -43,7 +51,7 @@ export default function Accordion_docentes2() {
             </label>
             <div className="collapse-content peer-checked:block hidden"> 
                 {/** */}
-                <Tabla_docentes docentes={docentes} onActualizarDocentes={actualizarDocentes}></Tabla_docentes>
+                <Tabla_docentes docentes={docentes} onActualizarDocentes={actualizarDocentes} onActualizarDocentes2={actualizarDocentes2}></Tabla_docentes>
                 
                 {/** */}
             </div>
