@@ -224,7 +224,7 @@ export default function Tabla_usuarios_grupos({grupoId,nuevoUsuario, fetchAlumno
                                         className='block w-full mb-2 rounded-md'
                                     />
                                 ) : (
-                                    <div class="text-base font-semibold"> {alumno.email}</div>
+                                    <div class="font-normal text-gray-500"> {alumno.email}</div>
                                 )}
                                 
                                 
