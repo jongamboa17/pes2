@@ -236,7 +236,7 @@ export default function Pendientes_grupo({alumnosPendientes,onEnviarDatos}) {
                         checked={alumnosSeleccionados.includes(alumno.id)}
                     />
                     
-                    <span className='ml-3 font-bold'>{alumno.name}{' '}{alumno.lastname}</span>
+                    <span className='ml-3 font-bold'>{alumno.name}</span>
                 </a>
             </li>
         ))}

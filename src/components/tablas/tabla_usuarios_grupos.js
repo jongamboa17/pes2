@@ -233,10 +233,10 @@ export default function Tabla_usuarios_grupos({grupoId,nuevoUsuario, fetchAlumno
                         <td class="px-6 py-4">
                             {editandoAlumnoId === alumno.id ? (
                                         <input
-                                            type="text"
+                                            type="number"
                                             value={datosEdicion.number}
                                             onChange={(e) => setDatosEdicion({...datosEdicion, number: e.target.value})}
-                                            className='block w-full mb-2 rounded-md'
+                                            className='block w-full mb-2 rounded-md dark:text-white'
                                         />
                                     ) : (
                                         <div class="text-base font-semibold"> {alumno.number}</div>
@@ -273,7 +273,7 @@ export default function Tabla_usuarios_grupos({grupoId,nuevoUsuario, fetchAlumno
                                 //
                             }
                             <button type="button" 
-                                    class="text-white bg-red-500 hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center mr-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                    class="mt-2 text-white bg-red-500 hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center mr-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                                     onClick={() => cambiarGrupo(alumno.id)}
                             >
                             <svg class="w-3 h-3 text-white dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 15">
