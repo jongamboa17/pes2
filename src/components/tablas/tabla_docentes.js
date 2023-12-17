@@ -210,7 +210,7 @@ export default function Tabla_docentes({docentes = [],onActualizarDocentes, onAc
 
                             {editandoDocenteId === docente.id ? (
                                 <input
-                                    type="text"
+                                    type="number"
                                     value={datosEdicion.number}
                                     onChange={(e) => setDatosEdicion({...datosEdicion, number: e.target.value})}
                                     className='block w-full mb-2 rounded-md'
