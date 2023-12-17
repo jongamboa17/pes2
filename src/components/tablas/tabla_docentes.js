@@ -5,11 +5,14 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { useEffect, useState } from 'react';
+import { useData } from '../AsignaturaContext';
 
 export default function Tabla_docentes({docentes = [],onActualizarDocentes, onActualizarDocentes2}) {    
     const supabase = createClientComponentClient();
     const [asignaturas, setAsignaturas] = useState([]);
     const [selectedAsignaturas, setSelectedAsignaturas] = useState({});
+
+    const { refrescarAsignaturas } = useData();
 
     const [editandoDocenteId, setEditandoDocenteId] = useState(null);
     const [datosEdicion, setDatosEdicion] = useState({ name: '', email: '', number: '' });
@@ -76,6 +79,11 @@ export default function Tabla_docentes({docentes = [],onActualizarDocentes, onAc
             
         }
     };
+
+    useEffect(() => {
+        // Cargar asignaturas
+        getAsignaturas();
+    }, [refrescarAsignaturas]);
 
     const handleAsignaturaChange = async (docenteId, newAsignaturaId) => {
         let updateData;

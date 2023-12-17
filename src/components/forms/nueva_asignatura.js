@@ -2,10 +2,13 @@
 import { useState, useEffect } from 'react';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { ToastContainer, toast } from 'react-toastify';
+import { useData } from '../AsignaturaContext';
 
 export default function Nueva_asignatura({ modalId }){
     //supabase client instance
     const supabase = createClientComponentClient();
+
+    const { actualizarAsignaturas } = useData();
     //estados para manejar los grados seleccionados
     const [nombreAsignatura, setNombreAsignatura] = useState('');
     const [gradosSeleccionados, setGradosSeleccionados] = useState([]);
@@ -161,6 +164,7 @@ export default function Nueva_asignatura({ modalId }){
             console.error('Error al insertar relaciones:', responseRelaciones.error);
         } else {
             //alert('Asignatura creada con éxito y relaciones establecidas');
+            actualizarAsignaturas();
             toast.success('Asignatura creada con éxito y asignada a los grados seleccionados');
             cerrarModal(); // Cierra el modal
             setNombreAsignatura(''); // Restablecer el nombre de la asignatura

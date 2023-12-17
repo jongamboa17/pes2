@@ -13,6 +13,8 @@ import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 
+import { DataProvider } from '../../components/AsignaturaContext';
+
 
 export default async function page() {
     const supabase = createServerComponentClient({ cookies });
@@ -98,6 +100,7 @@ export default async function page() {
 
        
         {/**------------------ */}
+        <DataProvider>
         <AdminParent/>
         
         <div className="py-5 px-5 grid grid-cols-4 gap-x-2 gap-y-3 grid-flow-row-dense"> 
@@ -145,7 +148,7 @@ export default async function page() {
             </div>
             <label className="modal-backdrop" htmlFor="my_modal_8">Close</label>
         </div>
-
+        </DataProvider>
     </>
   )
 }
