@@ -14,6 +14,23 @@ export default async function Home() {
 
   if (!user) {
     redirect('/sign-in');
+  }else{
+    //
+    let { data: profileData, error } = await supabase
+        .from('profiles')
+        .select('role') // selecciona todos los campos o especifica los que necesitas, por ejemplo: 'username, role'
+        .eq('id',user.id) // asumiendo que 'id' es la clave extranjera que referencia a 'auth.users'
+        .single();
+
+      if (profileData.role === 'Docente') {
+          redirect('/docentes');
+      }else if(profileData.role === 'Alumno'){
+          redirect('/alumnos');
+      } else{
+        redirect('/admin');
+      //console.log(profile.role);
+      }
+    //
   }
 
   return (
@@ -21,7 +38,7 @@ export default async function Home() {
       <h2>Bienvenido</h2>
       <code className="highlight">{user.role}</code>
       <Link className="button" href="/profile">
-        Ir al perfil
+        Ir a página de inicio
       </Link>
       <SignOut />
     </div>
