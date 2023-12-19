@@ -18,6 +18,15 @@ const UpdatePassword = () => {
   const router = useRouter();
   const [errorMsg, setErrorMsg] = useState(null);
 
+  async function handleSignOut() {
+    const { error } = await supabase.auth.signOut();
+
+    if (error) {
+      // eslint-disable-next-line no-console
+      console.error('ERROR:', error);
+    }
+  }
+
   async function updatePassword(formData) {
     const { error } = await supabase.auth.updateUser({
       password: formData.password,
@@ -27,7 +36,8 @@ const UpdatePassword = () => {
       setErrorMsg(error.message);
     } else {
       // Go to Home page
-      router.replace('/');
+      //router.replace('/');
+      handleSignOut();
     }
   }
 
